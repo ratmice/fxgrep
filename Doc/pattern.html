@@ -1,0 +1,3056 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"
+                      "http://www.w3.org/TR/REC-html40/loose.dtd">
+<HTML>
+  <HEAD>
+    <TITLE>
+      fxgrep -  The Functional XML Querying Tool 
+    </TITLE>
+  </HEAD>
+  <BODY BGCOLOR="WHITE">
+    <H1>
+      <A HREF="http://www.informatik.uni-trier.de/~aberlea/Fxgrep/"><IMG SRC="Images/fxgrep.jpeg" ALT="fxgrep - " ALIGN="MIDDLE" BORDER="0"></A>
+      The Functional XML Querying Tool 
+    </H1>
+    <P>
+      <IMG SRC="Images/shadow-big.jpg" ALT="-----------------" WIDTH="100%">
+    </P>
+    <H2>
+      Contents
+    </H2>
+    <TABLE CELLPADDING="0" CELLSPACING="0">
+      <TR>
+        <TD>
+          <IMG SRC="Images/darkblue-ball-shadow.gif" ALT="0" HSPACE="5">
+        </TD>
+        <TD>
+          <A HREF="fxgrep.html#DESC"> What is <I>fxgrep</I>? </A>
+        </TD>
+      </TR>
+      <TR>
+        <TD>
+          <IMG SRC="Images/darkblue-ball-shadow.gif" ALT="0" HSPACE="5">
+        </TD>
+        <TD>
+          <A HREF="proc.html#MODEL"> The Processing Model of <I>fxgrep</I>
+            </A>
+        </TD>
+      </TR>
+      <TR>
+        <TD>
+          <IMG SRC="Images/darkblue-ball-shadow.gif" ALT="0" HSPACE="5">
+        </TD>
+        <TD>
+          <A HREF="#PAT"> The Pattern Language of <I>fxgrep</I> </A>
+        </TD>
+      </TR>
+      <TR>
+        <TD>
+          <IMG SRC="Images/darkblue-ball-shadow.gif" ALT="0" HSPACE="5">
+        </TD>
+        <TD>
+          <A HREF="grammar.html#GRAM"> The Grammar Formalism of <I>fxgrep</I>
+            </A>
+        </TD>
+      </TR>
+      <TR>
+        <TD>
+          <IMG SRC="Images/darkblue-ball-shadow.gif" ALT="0" HSPACE="5">
+        </TD>
+        <TD>
+          <A HREF="textpat.html#TEXT"> Text Patterns </A>
+        </TD>
+      </TR>
+      <TR>
+        <TD>
+          <IMG SRC="Images/darkblue-ball-shadow.gif" ALT="0" HSPACE="5">
+        </TD>
+        <TD>
+          <A HREF="fxgrep.html#OPT"> <I>fxgrep</I> Options </A>
+        </TD>
+      </TR>
+    </TABLE>
+    <P>
+      <IMG SRC="Images/shadow-big.jpg" ALT="-----------------" WIDTH="100%">
+    </P>
+    <H2>
+      <A NAME="PAT"></A> The Pattern Language of <I>fxgrep</I> 
+    </H2>
+    <TABLE CELLPADDING="0" CELLSPACING="0">
+      <tr>
+        <td><IMG SRC="Images/darkblue-ball-shadow.gif" ALT="0" HSPACE="5"></td>
+        <td><a href="#PAT-UNARY">Unary Queries</a></td>
+      </tr>
+      <tr>
+        <td>     </td>
+        <td>
+    <TABLE CELLPADDING="0" CELLSPACING="0">
+      <TR>
+        <TD>
+          <IMG SRC="Images/darkblue-ball-shadow.gif" ALT="0" HSPACE="5">
+        </TD>
+        <TD>
+          <A HREF="#PAT-INTRO"> Introduction </A>
+        </TD>
+      </TR>
+      <TR>
+        <TD>
+          <IMG SRC="Images/darkblue-ball-shadow.gif" ALT="0" HSPACE="5">
+        </TD>
+        <TD>
+          <A HREF="#PAT-DET"> Detailed Description of the Pattern Language
+            </A>
+        </TD>
+      </TR>
+      <TR>
+        <TD>
+          <IMG SRC="Images/darkblue-ball-shadow.gif" ALT="0" HSPACE="5">
+        </TD>
+        <TD>
+          <A HREF="#PAT-TWO"> Two more sophisticated Examples </A>
+        </TD>
+      </TR>
+      <TR>
+        <TD>
+          <IMG SRC="Images/darkblue-ball-shadow.gif" ALT="0" HSPACE="5">
+        </TD>
+        <TD>
+          <A HREF="#PAT_SYN"> Summary of the Pattern Syntax </A>
+        </TD>
+      </TR>
+    </TABLE>
+
+        </td>
+      </tr>
+      <tr>
+        <td><IMG SRC="Images/darkblue-ball-shadow.gif" ALT="0" HSPACE="5"></td>
+        <td><a href="#PAT-BINARY">Binary Queries</a></td>
+      </tr>
+      
+    </TABLE>
+    <P>
+       <I>fxgrep</I>'s pattern language is similar to <A
+       HREF="http://www.w3.org/TR/xpath.html">XPath</A> in that it
+       identifies a node in the document tree by means of the path
+       through its ancestors. However, instead of XPath's arbitrary,
+       ad-hoc-style expressions in qualifiers, <I>fxgrep</I>
+       introduces two additional kinds of qualifiers, allowing the
+       formulation of conditions on the children or the siblings of a
+       node on the path.
+    </P>
+
+    <p>Furthermore, via binary queries, <i>fxgrep</i> can identify
+    a node in the input tree together with nodes which are in some specified
+    relation with the first node(see below).</p>
+
+    <P>
+      <IMG SRC="Images/shadow-med.jpg" ALT="-----------------" WIDTH="100%">
+    </P>
+    <H2>
+      <A NAME="PAT-UNARY"></A> Unary Queries
+    </H2>
+    <H3>
+      <A NAME="PAT-INTRO"></A> Introduction 
+    </H3>
+    <P>
+       A unary <I>fxgrep</I> pattern identifies a set of nodes in the
+       document forest as <EM>matches</EM> of the pattern; we also say
+       that these nodes match the pattern. A matching node is selected
+       by means of the <EM>path</EM> through its ancestors. The
+       simplest form of a pattern is a sequence of element types,
+       separated by <FONT><SAMP>/</SAMP></FONT>. It identifies all
+       nodes in the document forest whose ancestors, starting at the
+       document element, form that sequence of element types. For
+       instance, a simple pattern is the following:
+    </P>
+    <blockquote>
+       <FONT><SAMP>/doc/section/title</SAMP></FONT> 
+    </blockquote>
+    <P>
+       It identifies all <FONT><SAMP>title</SAMP></FONT> elements, that are
+      a child of a <FONT><SAMP>section</SAMP></FONT> element, which is in
+      turn a child of a <FONT><SAMP>doc</SAMP></FONT> element, which must
+      be the document element. 
+    </P>
+    <P>
+       The <FONT><SAMP>/</SAMP></FONT> operator denotes the <EM>child</EM>
+      relationship. Analogously, a <FONT><SAMP>//</SAMP></FONT> denotes the
+      <EM>descendant</EM> relation. Therefore, the pattern 
+    </P>
+    <blockquote>
+       <FONT><SAMP>/doc//title</SAMP></FONT> 
+    </blockquote>
+    <P>
+       identifies all <FONT><SAMP>title</SAMP></FONT> elements that are descendants
+      of the <FONT><SAMP>doc</SAMP></FONT> element. At the beginning of the
+      pattern, the <FONT><SAMP>/</SAMP></FONT> may be omitted, hence we might
+      also write <FONT><SAMP>doc//title</SAMP></FONT> instead. The <FONT><SAMP>//</SAMP></FONT>
+      operator may also start a pattern as in 
+    </P>
+    <blockquote>
+       <FONT><SAMP>//title</SAMP></FONT> 
+    </blockquote>
+    <P>
+       which selects all <FONT><SAMP>title</SAMP></FONT> elements in the document.
+      For unambiguity, a leading <FONT><SAMP>//</SAMP></FONT> may never be
+      dropped. 
+    </P>
+    <P>
+       The <FONT><SAMP>||</SAMP></FONT> operator specifies an alternative.
+      For instance, in order to select all <FONT><SAMP>title</SAMP></FONT>
+      children of either <FONT><SAMP>section</SAMP></FONT> or <FONT><SAMP>subsection</SAMP></FONT>
+      elements, one might specify the pattern 
+    </P>
+    <blockquote>
+       <FONT><SAMP>//(section||subsection)/title</SAMP></FONT> 
+    </blockquote>
+    <P>
+       Note that this pattern could also be written as <FONT><SAMP>//</SAMP><SAMP>&lt;</SAMP><SAMP>section|subsection>/title</SAMP></FONT>,
+      specifying an alternative of element types for the parent of the <FONT><SAMP>title</SAMP></FONT>
+      element (see also <A HREF="#NODEPAT">node patterns</A>). This is not possible
+      in general: Alternatives can relate to whole paths rather than only
+      to a single element. For instance, the following pattern identifies
+      all <FONT><SAMP>text</SAMP></FONT> elements that are either a child
+      of a <FONT><SAMP>caption</SAMP></FONT> or a child of a <FONT><SAMP>title</SAMP></FONT>
+      within a <FONT><SAMP>figure</SAMP></FONT> element: 
+    </P>
+    <blockquote>
+       <FONT><SAMP>//(caption||figure//title)/text</SAMP></FONT> 
+    </blockquote>
+    <P>
+       In order to select a text node, a <EM>text pattern</EM> must be specified
+      as the last component. For instance, the pattern 
+    </P>
+    <blockquote>
+       <FONT><SAMP>//title/"airplane"</SAMP></FONT> 
+    </blockquote>
+    <P>
+       selects all nodes that are children of a <FONT><SAMP>title</SAMP></FONT>
+      and contain the word <FONT><SAMP>airplane</SAMP></FONT>. An arbitrary
+      <A HREF="textpat.html#TEXT">text pattern</A> can be given between the
+      quotes. If the text pattern contains the quote character, the text pattern
+      can be quoted with the alternative quote character <FONT><SAMP>'</SAMP></FONT>
+      (apostrophe), or the quote symbol can be escaped with a <FONT><SAMP>\</SAMP></FONT>
+      in the text pattern. Thus, the two patterns 
+    </P>
+    <blockquote>
+       <FONT><SAMP>//"O'Hara"</SAMP></FONT> and <FONT><SAMP>//'O\'Hara'</SAMP></FONT>
+      
+    </blockquote>
+    <P>
+       are equivalent. 
+    </P>
+    <P>
+       With the help of <A HREF="#ATTQUAL"><EM>attribute qualifiers</EM></A>,
+      one can also constrain the attributes of an element on the path. For
+      instance, in order to find all <FONT><SAMP>title</SAMP></FONT> elements
+      that have an attribute <FONT><SAMP>toc</SAMP></FONT> with value <FONT><SAMP>yes</SAMP></FONT>,
+      one would use the pattern: 
+    </P>
+    <blockquote>
+       <FONT><SAMP>//title[@toc='yes']</SAMP></FONT> 
+    </blockquote>
+    <P>
+       An arbitrary text pattern can be specified between for the attribute
+      value. If a <FONT><SAMP>~</SAMP></FONT> is used instead of the <FONT><SAMP>=</SAMP></FONT>,
+      the attribute value need not be exactly <FONT><SAMP>yes</SAMP></FONT>:
+      It suffices if it contains that word. 
+    </P>
+    <P>
+       An attribute qualifier can be <EM>negated</EM> by preceding the <FONT><SAMP>@</SAMP></FONT>
+      with the negation operator <FONT><SAMP>!</SAMP></FONT>, requiring that
+      the attribute value must either not be specified, or it must not match
+      the specified text pattern (in case of <FONT><SAMP>~</SAMP></FONT> it
+      must not contain a matching substring). For instance, the attribute
+      qualifier <FONT><SAMP>[!@id~"xml"]</SAMP></FONT> states that that <FONT><SAMP>id</SAMP></FONT>
+      attribute, if present, must not contain the word <FONT><SAMP>xml</SAMP></FONT>.
+      
+    </P>
+    <P>
+       It is allowed to specify multiple attribute qualifiers for an element
+      which must then all be fulfilled. For instance, the pattern 
+    </P>
+    <blockquote>
+       <FONT><SAMP>.[@x][@y='yes'][!@z~"[0-9]"]</SAMP></FONT> 
+    </blockquote>
+    <P>
+       selects all elements (<FONT><SAMP>.</SAMP></FONT> is a node pattern
+      that matches any node) that have an <FONT><SAMP>x</SAMP></FONT> attribute
+      a <FONT><SAMP>y</SAMP></FONT> attribute with value <FONT><SAMP>yes</SAMP></FONT>,
+      and either have no attribute <FONT><SAMP>z</SAMP></FONT> or the value
+      of that attribute does not contain a digit. 
+    </P>
+    <P>
+       Another method of constraining an element on the path is using a <A HREF="#STRUCTQUAL"><EM>structure
+          qualifier</EM></A>, which imposes a structural constraint on the
+      forest formed by the children of the element. For instance, the pattern
+      
+    </P>
+    <blockquote>
+       <FONT><SAMP>//section[</SAMP><SAMP></SAMP><SAMP>subsection</SAMP><SAMP></SAMP><SAMP>]/title</SAMP></FONT>
+      
+    </blockquote>
+    <P>
+       selects only the titles of those
+       <FONT><SAMP>section</SAMP></FONT> elements that have a
+       <FONT><SAMP>subsection</SAMP></FONT> child. Between the
+       brackets, a <A HREF="#FORESTPAT"><EM>forest pattern</EM></A>
+       can be specified which is a regular expression over tree
+       patterns. The forest pattern
+       <FONT><SAMP></SAMP><SAMP></SAMP><SAMP>subsection</SAMP><SAMP></SAMP><SAMP></SAMP></FONT>,
+       for instance, requires a sequence of nodes that consists of a
+       node fulfilling the pattern
+       <FONT><SAMP>subsection</SAMP></FONT>, preceded and followed by
+       an arbitrary sequence of nodes (the preceding and the following
+       arbitrary sequence of nodes can be explicitely prohibited by a
+       leading <samp>^</samp> or trailing <samp>$</samp> respectively;
+       the arbitrary sequence of nodes can be explicitely specified as
+       <FONT><SAMP>_</SAMP></FONT>).  In this context, we say that a
+       node <EM>fulfills</EM> a pattern if it contains at least one
+       match of the pattern, relative to this node. If a pattern
+       occurring in a forest pattern is not just a simple node
+       pattern, it must be enclosed in parentheses, as in
+    </P>
+    <blockquote>
+       <FONT><SAMP>//section[(//'automata</SAMP><SAMP>&nbsp;</SAMP><SAMP>theory')]/title</SAMP></FONT>
+      
+    </blockquote>
+    <P>
+       which selects the titles of all <FONT><SAMP>section</SAMP></FONT> elements
+      that contain the text <FONT><SAMP>automata</SAMP><SAMP>&nbsp;</SAMP><SAMP>theory</SAMP></FONT>.
+      A structure qualifier may be negated, and multiple structure qualifiers
+      may be specified for a node: 
+    </P>
+    <blockquote>
+       <FONT><SAMP>//section[!subsection][(//footnote/'automata')]/title</SAMP></FONT>
+      
+    </blockquote>
+    <P>
+       selects the titles of all sections that do not have a child of type
+      <FONT><SAMP>subsection</SAMP></FONT> and that do have a descendant of
+      type <FONT><SAMP>footnote</SAMP></FONT> which contains the text <FONT><SAMP>automata</SAMP></FONT>.
+      
+    </P>
+    <P>
+      A node pattern describes properties of trees such as 
+      element type, attributes and structure. <FONT><SAMP>a[@b]</SAMP></FONT> is for example a
+      node pattern describing an element <FONT><SAMP>a</SAMP></FONT>
+      having an attribute <FONT><SAMP>b</SAMP></FONT>.
+
+      Properties of paths in document trees are specified by <I>vertical</I>
+      regular expressions. These are built from
+      node patterns which are followed by the operators
+      <FONT><SAMP>/</SAMP></FONT> or
+      <FONT><SAMP>//</SAMP></FONT>. 
+      <FONT><SAMP>(a[@b]/)+</SAMP></FONT> for example,
+      represents a path composed only of nodes
+      <FONT><SAMP>a</SAMP></FONT> having an attribute
+      <FONT><SAMP>b</SAMP></FONT>.
+
+      An <I>fxgrep</I> pattern is composed of a path,
+      possibly empty, followed by a node pattern as in:
+    </P>
+    <blockquote>
+      <FONT><SAMP>(a[@b]/+)c</SAMP></FONT>.
+    </blockquote>
+    <P>
+      which selects the elements <FONT><SAMP>c</SAMP></FONT> such that
+      all theirs ancestors are <FONT><SAMP>a</SAMP></FONT>'s
+      having an attribute <FONT><SAMP>b</SAMP></FONT>.
+    </P>
+    <P>
+      The pattern:
+    </P>
+    <blockquote>
+      <FONT><SAMP>(a[b]/+)c</SAMP></FONT>.
+    </blockquote>
+    <P>
+      selects the elements <FONT><SAMP>c</SAMP></FONT> such that
+      all theirs ancestors are <FONT><SAMP>a</SAMP></FONT>'s
+      having a child <FONT><SAMP>b</SAMP></FONT>.
+    </P>
+    <P>
+       Finally, a <A HREF="#CXTQUAL"><EM>context qualifier</EM></A>
+      may be specified for a node on a path. A context qualifier is a
+      regular expression over node patterns and the special symbol
+      <FONT><SAMP>#</SAMP></FONT>. The <FONT><SAMP>#</SAMP></FONT> is
+      a place-holder for the child of the node, where the path
+      continues.
+    </P>
+    <P> For instance, the pattern 
+    </P>
+    <blockquote>
+       <FONT><SAMP>a[b#c]/d</SAMP></FONT>      
+    </blockquote>
+    <P>
+       requires that the left sibling of the <FONT><SAMP>d</SAMP></FONT> element
+      must be a <FONT><SAMP>b</SAMP></FONT>, and its right sibling must be
+      a <FONT><SAMP>c</SAMP></FONT>. 
+    </P>
+    <P>
+      Consider the pattern:
+    </P>
+    <blockquote>
+       <FONT><SAMP>a[x#y#z]/b</SAMP></FONT>      
+    </blockquote>
+    <P>
+      In a document of type <FONT><SAMP>a</SAMP></FONT>, containing a
+      sequence of <FONT><SAMP>x</SAMP></FONT>,
+      <FONT><SAMP>b</SAMP></FONT>, <FONT><SAMP>y</SAMP></FONT>,
+      <FONT><SAMP>b</SAMP></FONT>, <FONT><SAMP>z</SAMP></FONT>
+      elements, this matches the two <FONT><SAMP>b</SAMP></FONT>'s.
+    </P>
+    <P>
+      A context qualifier can also be used
+      for selecting the first child of an element, for instance in 
+    </P>
+    <blockquote>
+       <FONT><SAMP>//section[^#]/subsection</SAMP></FONT> 
+    </blockquote>
+    <P>
+       which selects all <FONT><SAMP>subsection</SAMP></FONT> elements that
+      are the first child of a <FONT><SAMP>section</SAMP></FONT>. 
+    </P>
+    <p>The last subsection is selected by:</p>
+    <blockquote>
+       <FONT><SAMP>//section[#$]/subsection</SAMP></FONT> 
+    </blockquote>
+
+    <P>
+      Note that it is only sensible to have at most one context
+      qualifier for a node. A context qualifier also makes sense only
+      if there is at least a <FONT><SAMP>#</SAMP></FONT> symbol in any
+      sequence permitted by the specified regular expression.
+    </P>
+    <P>
+      Another example for the use of context qualifiers is 
+    </P>
+    <blockquote>
+       <FONT><SAMP>a[^(b#)+]/b</SAMP></FONT>
+    </blockquote>
+    <P>
+       which identifies every second <FONT><SAMP>b</SAMP></FONT> element
+      in a an <FONT><SAMP>a</SAMP></FONT> (provided that all children of
+      <FONT><SAMP>a</SAMP></FONT> are of type <FONT><SAMP>b</SAMP></FONT>). 
+    </P>
+
+    <P>In the examples so far, matches were specified by indicating a
+    path pattern from the root to the match node. In general it is
+    possible to specify that the path from the root to the match node
+    should simultaneously satisfy more path patterns, or that it
+    must not satisfy a path pattern. For example, the following
+    pattern locates the <samp>c</samp> nodes that have an
+    <samp>a</samp> father and some <samp>b</samp> ancestor:</P>
+
+    <blockquote><samp>((//a/)&(//b//))c</samp></blockquote>
+
+    <p>Here, the <samp>c</samp> match node is preceded by a
+    conjunction of two path patterns, separated by <samp>&</samp>. The
+    first path pattern, <samp>//a/</samp>, specifies that the match
+    node must have a father <samp>a</samp> located arbitrarily deep in
+    the input tree and the second, <samp>//b//</samp>, that it must
+    have a <samp>b</samp> ancestor located aribtrarily deep in the
+    input.</p>
+
+    <p>Similarly, the pattern:</p>
+
+    <blockquote><samp>((//a//a//)&!(//a/a/a//))b<samp></blockquote>
+
+    <p>locates the b node which have two <samp>a</samp> ancestors, but
+    do not have three successive <samp>a</samp> ancestors.</p>
+
+
+    <P>
+      <IMG SRC="Images/shadow-med.jpg" ALT="-----------------" WIDTH="100%">
+    </P>
+    <H3>
+      <A NAME="PAT-DET"></A> Detailed Description of the Pattern Language
+      
+    </H3>
+    <TABLE CELLPADDING="0" CELLSPACING="0">
+      <TR>
+        <TD>
+          <IMG SRC="Images/darkblue-ball-shadow.gif" ALT="0" HSPACE="5">
+        </TD>
+        <TD>
+          <A HREF="#NODEPAT"> Node Tests and Node Patterns </A>
+        </TD>
+      </TR>
+      <TR>
+        <TD>
+          <IMG SRC="Images/darkblue-ball-shadow.gif" ALT="0" HSPACE="5">
+        </TD>
+        <TD>
+          <A HREF="#TREEPAT">Paths and Patterns</A>
+        </TD>
+      </TR>
+      <TR>
+        <TD>
+          <IMG SRC="Images/darkblue-ball-shadow.gif" ALT="0" HSPACE="5">
+        </TD>
+        <TD>
+          <A HREF="#STRUCTQUAL">Structure Qualifiers</A>
+        </TD>
+      </TR>
+      <TR>
+        <TD>
+          <IMG SRC="Images/darkblue-ball-shadow.gif" ALT="0" HSPACE="5">
+        </TD>
+        <TD>
+          <A HREF="#CXTQUAL">Context Qualifiers</A>
+        </TD>
+      </TR>
+      <TR>
+        <TD>
+          <IMG SRC="Images/darkblue-ball-shadow.gif" ALT="0" HSPACE="5">
+        </TD>
+        <TD>
+          <A HREF="#CXTPAT">Context Patterns and Patterns</A>
+        </TD>
+      </TR>
+    </TABLE>
+    <P>
+      <IMG SRC="Images/shadow-small.jpg" ALT="-----------------" WIDTH="100%">
+    </P>
+    <H4>
+      <A NAME="NODEPAT"></A> Node Tests and Node Patterns 
+    </H4>
+    <P>
+       <A NAME="ELEMPAT"></A>A <EM>node test</EM> describes the allowable
+      element types for a subtree: 
+    </P>
+    <TABLE BGCOLOR="#FFFFD0" WIDTH="100%" BORDER="1" ALIGN="CENTER" CELLPADDING="5">
+      <TR>
+        <TD>
+          <TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0">
+            <TR>
+              <TD HEIGHT="5">
+              </TD>
+            </TR>
+            <TR>
+              <TD ALIGN="RIGHT">
+                <I>NodeTest</I>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">::=</FONT></B>
+              </TD>
+              <TD>
+                <SAMP>*</SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>ElementType</I>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <SAMP>&lt;</SAMP><I>ElementTypePattern</I><SAMP>></SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <SAMP>&lt;</SAMP><I>"TextPattern"</I><SAMP>></SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <SAMP>&lt;</SAMP><I>'TextPattern'</I><SAMP>></SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD HEIGHT="5">
+              </TD>
+            </TR>
+            <TR>
+              <TD ALIGN="RIGHT">
+                <I>ElementTypePattern</I>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">::=</FONT></B>
+              </TD>
+              <TD>
+                <SAMP>*</SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>ElementType</I><SAMP> </SAMP><B><FONT COLOR="#00C000">(</FONT></B><SAMP>
+                  | </SAMP><I>ElementType</I><SAMP> </SAMP><B><FONT COLOR="#00C000">)</FONT></B><B><FONT COLOR="#00C000">*</FONT></B>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <SAMP>!</SAMP><I>ElementType</I><SAMP> </SAMP><B><FONT COLOR="#00C000">(</FONT></B><SAMP>
+                  | </SAMP><I>ElementType</I><SAMP> </SAMP><B><FONT COLOR="#00C000">)</FONT></B><B><FONT COLOR="#00C000">*</FONT></B>
+              </TD>
+            </TR>
+          </TABLE>
+        </TD>
+      </TR>
+    </TABLE>
+    <P>
+       The node test <FONT><SAMP>*</SAMP></FONT> is fulfilled by all
+       element types, whereas only elements of type
+       <FONT><SAMP>a</SAMP></FONT> satisfy the node test
+       <FONT><SAMP>a</SAMP></FONT>. The node test
+       <FONT><SAMP>&lt;</SAMP><FONT><SAMP>a</SAMP><SUB>1</SUB></FONT><B><FONT
+       COLOR="#00C000">...</FONT></B><FONT><SAMP>a</SAMP><SUB>k</SUB></FONT><SAMP>></SAMP></FONT>
+       is true for an element with type <FONT><SAMP>a</SAMP></FONT> if
+       <FONT><SAMP>a</SAMP></FONT>=<FONT><FONT><SAMP>a</SAMP><SUB>i</SUB></FONT></FONT>
+       for some <I>i</I>; for
+       <FONT><SAMP>&lt;</SAMP><SAMP>!</SAMP><FONT><SAMP>a</SAMP><SUB>1</SUB></FONT><B><FONT
+       COLOR="#00C000">...</FONT></B><FONT><SAMP>a</SAMP><SUB>k</SUB></FONT><SAMP>></SAMP></FONT>
+       <FONT><SAMP>a</SAMP></FONT> must be different from all
+       <FONT><FONT><SAMP>a</SAMP><SUB>i</SUB></FONT></FONT>. The node
+       test <FONT><SAMP>&lt;"tp"></SAMP></FONT> or
+       <FONT><SAMP>&lt;'tp'></SAMP></FONT> is fulfilled by element
+       whose type name fulfills the <A HREF="textpat.html#TEXT">text
+       pattern</A> <I>tp</I>.
+      
+    </P>
+    <P>
+       A <EM>node pattern</EM> describes a structural property of a subtree
+      by means of its element type and its attributes: 
+    </P>
+    <TABLE BGCOLOR="#FFFFD0" WIDTH="100%" BORDER="1" ALIGN="CENTER" CELLPADDING="5">
+      <TR>
+        <TD>
+          <TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0">
+            <TR>
+              <TD HEIGHT="5">
+              </TD>
+            </TR>
+            <TR>
+              <TD ALIGN="RIGHT">
+                <I>NodePattern</I>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">::=</FONT></B>
+              </TD>
+              <TD>
+                <SAMP>"</SAMP><I>TextPattern</I><SAMP>"</SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <SAMP>'</SAMP><I>TextPattern</I><SAMP>'</SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <SAMP>&lt;</SAMP><SAMP>?</SAMP><I>TextPattern</I><SAMP>?></SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <SAMP>. </SAMP><I>AttributeQualifier</I><B><FONT COLOR="#00C000">*</FONT></B>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>NodeTest</I><SAMP> </SAMP><I>AttributeQualifier</I><B><FONT COLOR="#00C000">*</FONT></B>
+              </TD>
+            </TR>
+            <TR>
+              <TD HEIGHT="5">
+              </TD>
+            </TR>
+            <TR>
+              <TD ALIGN="RIGHT">
+                <I>AttributeQualifier</I>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">::=</FONT></B>
+              </TD>
+              <TD>
+                <SAMP>[@</SAMP><I>AttributeTest</I><SAMP>]</SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <SAMP>[!@</SAMP><I>AttributeTest</I><SAMP>]</SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD HEIGHT="5">
+              </TD>
+            </TR>
+            <TR>
+              <TD ALIGN="RIGHT">
+                <I>AttributeTest</I>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">::=</FONT></B>
+              </TD>
+              <TD>
+                <I>AttributeName</I>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>AttributeName</I><SAMP>='</SAMP><I>TreePattern</I><SAMP>'</SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>AttributeName</I><SAMP>="</SAMP><I>TreePattern</I><SAMP>"</SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>AttributeName</I><SAMP>~'</SAMP><I>TreePattern</I><SAMP>'</SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>AttributeName</I><SAMP>~"</SAMP><I>TreePattern</I><SAMP>"</SAMP>
+              </TD>
+            </TR>
+          </TABLE>
+        </TD>
+      </TR>
+    </TABLE>
+    <P>
+       <A NAME="TEXTNP"></A>A text node fulfills a node pattern of the form
+      <FONT><SAMP>"</SAMP><I>tp</I><SAMP>"</SAMP></FONT> or <FONT><SAMP>'</SAMP><I>tp</I><SAMP>'</SAMP></FONT>
+      if its text contains a substring matching the <A HREF="textpat.html#TEXT">text
+        pattern</A> <I>tp</I>. Similarly, a node pattern of the form <FONT><SAMP>&lt;</SAMP><SAMP>?</SAMP><I>tp</I><SAMP>?></SAMP></FONT>
+      is fulfilled by a processing instruction whose target contains a match
+      of <I>tp</I>. If an exact match of the text pattern is desired, the
+      special text pattern operators <FONT><SAMP>^</SAMP></FONT> and <FONT><SAMP>$</SAMP></FONT>
+      must be used (see <A HREF="textpat.html#TEXTSPECIAL">below</A>). 
+    </P>
+    <P>
+       <A NAME="ATTQUAL"></A>For elements satisfying a node test, a list of
+      <EM>attribute qualifiers</EM> can be specified, constraining the element's
+      attributes. Each attribute test given in such a qualifier must be fulfilled
+      unless it is negated by <FONT><SAMP>!</SAMP></FONT>; in that case it
+      must not be fulfilled. A more general version of the node test <FONT><SAMP>*</SAMP></FONT>
+      is the dot (<FONT><SAMP>.</SAMP></FONT>): In addition to arbitrary elements,
+      it also matches text nodes and processing instructions. Note, however,
+      that these kinds of nodes have no attributes; hence it makes no sense
+      to specify attribute qualifiers if text nodes or processing instructions
+      shall be matched. 
+    </P>
+    <P>
+       An attribute test consisting of an attribute name <I>x</I> is fulfilled
+      for an element if it has an attribute with that name. If the attribute
+      test has the form <FONT><I>x</I><SAMP>="</SAMP><I>tp</I><SAMP>"</SAMP></FONT>
+      or <FONT><I>x</I><SAMP>='</SAMP><I>tp</I><SAMP>'</SAMP></FONT>, then
+      the attribute's value must additionally match the text pattern <I>tp</I>.
+      Slightly less restrictively, the <FONT><SAMP>~</SAMP></FONT> indicates
+      that the attribute value must contain a substring that matches the text
+      pattern. 
+    </P>
+    <P>
+       For instance, the node pattern <FONT><SAMP>&lt;</SAMP><SAMP>a|b>[@x~"1"][!@y]</SAMP></FONT>
+      describes all elements of type <FONT><SAMP>a</SAMP></FONT> or <FONT><SAMP>b</SAMP></FONT>
+      that have an attribute <FONT><SAMP>x</SAMP></FONT> whose value contains
+      the digit <FONT><SAMP>1</SAMP></FONT> and which do not have an attribute
+      <FONT><SAMP>y</SAMP></FONT>. The node pattern <FONT><SAMP>&lt;</SAMP><SAMP>?^fxp-?></SAMP></FONT>
+      describes all processing instructions whose target begins with <FONT><SAMP>fxp-</SAMP></FONT>.
+      Note that though the <FONT><SAMP>@</SAMP></FONT> appears superfluous
+      at this point, it is necessary for distinguishing attribute qualifiers
+      from other forms of qualifiers to be introduced later on. 
+    </P>
+    <P>
+      <IMG SRC="Images/shadow-small.jpg" ALT="-----------------" WIDTH="100%">
+    </P>
+    <H4>
+      <A NAME="TREEPAT"></A>Paths and Patterns
+    </H4>
+    <P>
+       <EM>Path </EM> and <EM>patterns</EM> are composed from
+      node patterns using the operators <FONT><SAMP>/</SAMP></FONT>, <FONT><SAMP>//</SAMP></FONT>
+      and <FONT><SAMP>||</SAMP></FONT>: 
+    </P>
+    <TABLE BGCOLOR="#FFFFD0" WIDTH="100%" BORDER="1" ALIGN="CENTER" CELLPADDING="5">
+      <TR>
+        <TD>
+          <TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0">
+            <TR>
+              <TD HEIGHT="5">
+              </TD>
+            </TR>
+            <TR>
+              <TD ALIGN="RIGHT">
+                <I>Path</I>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">::=</FONT></B>
+              </TD>
+              <TD>
+                <I>NodePattern/</I>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>NodePattern//</I>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>Path<SAMP> || </SAMP>Path</I>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>(Path)</I>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>Path Path</I>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>Path?</I>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>Path+</I>
+              </TD>
+            </TR>
+            <TR><TD HEIGHT="5"></TD></TR>
+            <TR>
+              <TD ALIGN="RIGHT">
+                <I>Pattern</I>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">::=</FONT></B>
+              </TD>
+              <TD>
+                <I>Path NodePattern</I>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>NodePattern</I><SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <SAMP>(</SAMP><I>Pattern</I><SAMP>)</SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>Pattern</I><SAMP> || </SAMP><I>Pattern</I>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>/Pattern</I><SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>//Pattern</I><SAMP>
+              </TD>
+            </TR>
+            <TR><TD HEIGHT="5"></TD></TR>
+            <tr>
+              <TD ALIGN="RIGHT"><I>RootPath</I></TD>
+              <TD ALIGN="MIDDLE"><B><FONT COLOR="#00C000">::=</FONT></B> </TD>
+              <td><i>Path</i></td>
+            </tr>
+            <tr>
+              <td></td>
+              <TD ALIGN="MIDDLE"><B><FONT COLOR="#00C000">|</FONT></B></TD>
+              <td><i>/Path</i></td>
+            </tr>
+            <tr>
+              <td></td>
+              <TD ALIGN="MIDDLE"><B><FONT COLOR="#00C000">|</FONT></B></TD>
+              <td><i>//Path</i></td>
+            </tr>
+            <TR><TD HEIGHT="5"></TD></TR>
+            <tr>
+              <TD ALIGN="RIGHT"><I>NegPath</I></TD>
+              <TD ALIGN="MIDDLE"><B><FONT COLOR="#00C000">::=</FONT></B> </TD>
+              <td><i>RootPath</i></td>
+            </tr>
+            <tr>
+              <td></td>
+              <TD ALIGN="MIDDLE"><B><FONT COLOR="#00C000">|</FONT></B></TD>
+              <td><i>!RootPath</i></td>
+            </tr>
+            <tr>
+              <td></td>
+              <TD ALIGN="MIDDLE"><B><FONT COLOR="#00C000">|</FONT></B></TD>
+              <td><i>(!RootPath)</i></td>
+            </tr>
+            <TR><TD HEIGHT="5"></TD></TR>
+            <tr>
+              <TD ALIGN="RIGHT"><I>ConjPath</I></TD>
+              <TD ALIGN="MIDDLE"><B><FONT COLOR="#00C000">::=</FONT></B> </TD>
+              <td><i>NegPath</i></td>
+            </tr>
+            <tr>
+              <td></td>
+              <TD ALIGN="MIDDLE"><B><FONT COLOR="#00C000">|</FONT></B></TD>
+              <td><i>NegPath &amp; ConjPath</i></td>
+            </tr>
+            <TR><TD HEIGHT="5"></TD></TR>
+            <tr>
+              <TD ALIGN="RIGHT"><I>TopPattern</I></TD>
+              <TD ALIGN="MIDDLE"><B><FONT COLOR="#00C000">::=</FONT></B> </TD>
+              <td><i>Pattern</i></td>
+            </tr>
+            <tr>
+              <td></td>
+              <TD ALIGN="MIDDLE"><B><FONT COLOR="#00C000">|</FONT></B></TD>
+              <td><i>(ConjPath) NodePattern</i></td>
+            </tr>        
+          </TABLE>
+        </TD>
+      </TR>
+    </TABLE>
+    <P>
+       A pattern identifies nodes within a tree by
+      describing the path through the ancestors of a node, starting
+      at the root of the tree. Intuitively, operators <FONT><SAMP>/</SAMP></FONT>
+      and <FONT><SAMP>//</SAMP></FONT> express the child and descendant relations,
+      respectively, whereas <FONT><SAMP>||</SAMP></FONT> specifies an alternative.
+      If a pattern <I>p</I> identifies a
+      node <I>n</I> in tree <I>T</I>, then we also say that <I>n</I> <EM>matches</EM>
+      <I>p</I> in <I>T</I>, or <I>p</I> locates
+      <I>n</I> in <I>T</I>. 
+    </P>
+    <P>
+       The simplest form of a pattern is a node pattern, which locates
+      the root node of <I>T</I> if it satisfies the node pattern. A pattern
+      <FONT><FONT><I>p</I><SUB>1</SUB></FONT><SAMP>||</SAMP><FONT><I>p</I><SUB>2</SUB></FONT></FONT>
+      locates all nodes in <I>T</I> matching either <FONT><I>p</I><SUB>1</SUB></FONT>
+      or <FONT><I>p</I><SUB>2</SUB></FONT>. 
+    </P>
+    <P>
+      If <FONT><I>path</I><SUB>1</SUB> <I>np</I><SUB>1</SUB>
+      identifies a node <I>n</I> in tree <I>T</I> then
+      <FONT><I>path</I><SUB>1</SUB>
+      <I>np</I><SUB>1</SUB><SAMP>/</SAMP><I>path</I><SUB>2</SUB></FONT><I>np</I><SUB>2</SUB>
+      identifies all subtrees that match <I>path</I><SUB>2</SUB><I>np</I><SUB>2</SUB> in a
+      subtree rooted at a child of <I>T</I>.
+    </P>
+    <P>
+      <FONT><I>path</I><SUB>1</SUB>
+      <I>np</I><SUB>1</SUB><SAMP>//</SAMP><I>path</I><SUB>2</SUB></FONT><I>np</I><SUB>2</SUB>
+      additionally locates all nodes matching <I>path</I><SUB>2</SUB><I>np</I><SUB>2</SUB>
+      in an arbitrary subtree of <I>T</I>. Let us illustrate this with
+      some examples:
+    </P>
+    <TABLE>
+      <TR>
+        <TD VALIGN="TOP">
+          <IMG SRC="Images/green-ball-shadow.gif">
+        </TD>
+        <TD VALIGN="TOP">
+          <P>
+             The tree pattern <FONT><SAMP>/.</SAMP></FONT> always locates
+            the root node in any tree <I>T</I>, whereas <FONT><SAMP>//a[@x~"1"]</SAMP></FONT>
+            locates all element nodes in <I>T</I> with element type <FONT><SAMP>a</SAMP></FONT>
+            and an attribute <FONT><SAMP>x</SAMP></FONT> whose value contains
+            <FONT><SAMP>"1"</SAMP></FONT>. 
+          </P>
+        </TD>
+      </TR>
+      <TR>
+        <TD VALIGN="TOP">
+          <IMG SRC="Images/green-ball-shadow.gif">
+        </TD>
+        <TD VALIGN="TOP">
+          <P>
+             The tree pattern <FONT><SAMP>/a/b//c</SAMP></FONT> identifies
+            all element nodes with type <FONT><SAMP>c</SAMP></FONT> that are
+            descendants of a <FONT><SAMP>b</SAMP></FONT> element which is
+            itself a child of the root node of <I>T</I>, provided that this
+            node has element type <FONT><SAMP>a</SAMP></FONT>. 
+          </P>
+        </TD>
+      </TR>
+      <TR>
+        <TD VALIGN="TOP">
+          <IMG SRC="Images/green-ball-shadow.gif">
+        </TD>
+        <TD VALIGN="TOP">
+          <P>
+             <FONT><SAMP>/(a/||b/)c</SAMP></FONT> matches all children of <I>T</I>'s
+            root that have element type <FONT><SAMP>c</SAMP></FONT>, if the
+            root node has type <FONT><SAMP>a</SAMP></FONT> or <FONT><SAMP>b</SAMP></FONT>;
+            otherwise no nodes match in <I>T</I>. 
+          </P>
+        </TD>
+      </TR>
+      <TR>
+        <TD VALIGN="TOP">
+          <IMG SRC="Images/green-ball-shadow.gif">
+        </TD>
+        <TD VALIGN="TOP">
+          <P>
+             In a processing instruction whose target starts with <FONT><SAMP>fxp-</SAMP></FONT>,
+            the tree pattern <FONT><SAMP>/</SAMP><SAMP>&lt;</SAMP><SAMP>?^fxp-?>/'forest'</SAMP></FONT>
+            locates its text, provided the text contains the word <FONT><SAMP>forest</SAMP></FONT>.
+            
+          </P>
+        </TD>
+      </TR>
+    </TABLE>
+    <P>
+      A pattern which is not starting with <FONT><SAMP>/</SAMP></FONT>
+      or <FONT><SAMP>//</SAMP></FONT> is implicitly considered to start with
+      <FONT><SAMP>/</SAMP></FONT>.
+    </P>
+
+    <p>In general, a pattern consists of a conjunction of possibly
+    negated path patterns followed by a node pattern. The match node
+    must than have the structure specified by the node pattern and the
+    path from the root to the match node must match each positive path
+    pattern and must not match any negative path pattern in the
+    conjunction.</p>
+
+    <P>
+      <IMG SRC="Images/shadow-small.jpg" ALT="-----------------" WIDTH="100%">
+    </P>
+    <H4>
+      <A NAME="STRUCTQUAL"></A>Structure Qualifiers
+    </H4>
+    <P>
+       The pattern language presented so far can only refer to a single child
+      of a node, but it can not argue about the entirety of a node's children.
+      We therefore add a new kind of qualifiers now: <EM>structure qualifiers</EM>
+      for constraining the content of an element. These qualifiers can be
+      given as part of a node pattern in addition to the attribute qualifiers
+      presented above. We thus extend the syntax of node patterns: 
+    </P>
+    <TABLE BGCOLOR="#FFFFD0" WIDTH="100%" BORDER="1" ALIGN="CENTER" CELLPADDING="5">
+      <TR>
+        <TD>
+          <TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0">
+            <TR>
+              <TD HEIGHT="5">
+              </TD>
+            </TR>
+            <TR>
+              <TD ALIGN="RIGHT">
+                <I>NodePattern</I>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">::=</FONT></B>
+              </TD>
+              <TD>
+                <SAMP>"</SAMP><I>TextPattern</I><SAMP>"</SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <SAMP>'</SAMP><I>TextPattern</I><SAMP>'</SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <SAMP>&lt;</SAMP><SAMP>?</SAMP><I>TextPattern</I><SAMP>?>
+                  </SAMP><I>Qualifier</I><B><FONT COLOR="#00C000">*</FONT></B>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <SAMP>. </SAMP><I>AttributeQualifier</I><B><FONT COLOR="#00C000">*</FONT></B><SAMP>
+                  </SAMP><I>Qualifier</I><B><FONT COLOR="#00C000">*</FONT></B>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>NodeTest</I><SAMP> </SAMP><I>AttributeQualifier</I><B><FONT COLOR="#00C000">*</FONT></B><SAMP>
+                  </SAMP><I>Qualifier</I><B><FONT COLOR="#00C000">*</FONT></B>
+              </TD>
+            </TR>
+            <TR>
+              <TD HEIGHT="5">
+              </TD>
+            </TR>
+            <TR>
+              <TD ALIGN="RIGHT">
+                <I>Qualifier</I>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">::=</FONT></B>
+              </TD>
+              <TD>
+                <SAMP>[</SAMP><I>ForestPattern</I><SAMP>]</SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <SAMP>[!</SAMP><I>ForestPattern</I><SAMP>]</SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD HEIGHT="5">
+              </TD>
+            </TR>
+            <TR>
+              <TD ALIGN="RIGHT">
+                <I>ForestPattern</I>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">::=</FONT></B>
+              </TD>
+              <TD>
+                <SAMP>^</SAMP><B><FONT COLOR="#00C000">?</FONT></B><I>ForestPat</I><SAMP>$</SAMP><B><FONT COLOR="#00C000">?</FONT></B>
+              </TD>
+            </TR>
+            <TR>
+              <TD HEIGHT="5">
+              </TD>
+            </TR>
+            <TR>
+              <TD ALIGN="RIGHT">
+                <I>ForestPat</I>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">::=</FONT></B>
+              </TD>
+              <TD>
+                <IMG SRC="Images/epsilon.gif"><SAMP> </SAMP><B><FONT COLOR="#00C000">|</FONT></B><SAMP>
+                  _ </SAMP><B><FONT COLOR="#00C000">|</FONT></B><SAMP> ~</SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>Pattern</I>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <SAMP>(</SAMP><I>ForestPat</I><SAMP>)</SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>ForestPat</I><SAMP>?</SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>ForestPat</I><SAMP>*</SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>ForestPat</I><SAMP>**</SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>ForestPat</I><SAMP>+</SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>ForestPat</I><SAMP>++</SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>ForestPat</I><SAMP> </SAMP><I>ForestPat</I>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>ForestPat</I><SAMP>, </SAMP><I>ForestPat</I>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>ForestPat</I><SAMP> | </SAMP><I>ForestPat</I>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>#</I><SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD HEIGHT="5">
+              </TD>
+            </TR>
+            <TR>
+              <TD ALIGN="RIGHT">
+                <I>Pattern</I>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">::=</FONT></B>
+              </TD>
+              <TD>
+                <I>NodePattern</I>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <SAMP>(</SAMP><I>Pattern</I><SAMP>)</SAMP>
+              </TD>
+            </TR>
+          </TABLE>
+        </TD>
+      </TR>
+    </TABLE>
+    <P>
+       <A NAME="FORESTPAT"></A> A structure qualifier is a possibly negated
+      <EM>forest pattern</EM>, which is an extended <EM>regular expression</EM>
+      over tree patterns. In order to explain the meaning of forest patterns,
+      let us first define a <EM>structural match</EM> of a tree pattern: A
+      tree pattern <I>tp</I> structurally matches a tree <I>T</I> if some
+      node matches <I>tp</I> in <I>T</I>. A forest pattern (structurally)
+      matches a forest in either of the following cases: 
+    </P>
+    <TABLE>
+      <TR>
+        <TD VALIGN="TOP">
+          <IMG SRC="Images/green-ball-shadow.gif">
+        </TD>
+        <TD VALIGN="TOP">
+          <P>
+             The forest pattern <IMG SRC="Images/epsilon.gif"> matches an
+            empty forest. 
+          </P>
+        </TD>
+      </TR>
+      <TR>
+        <TD VALIGN="TOP">
+          <IMG SRC="Images/green-ball-shadow.gif">
+        </TD>
+        <TD VALIGN="TOP">
+          <P>
+             The forest pattern <FONT><SAMP>_</SAMP></FONT> matches an arbitrary
+            forest, whereas <FONT><SAMP>~</SAMP></FONT> matches a white-space
+            sequence. A white-space sequence is a possibly empty sequence
+            of processing instructions and text pieces containing only white-space
+            characters. That is, <FONT><SAMP>_</SAMP></FONT> is an abbreviation
+            for <FONT><SAMP>.**</SAMP></FONT>, and <FONT><SAMP>~</SAMP></FONT>
+            is a shorthand for <FONT><SAMP>(</SAMP><SAMP>&lt;</SAMP><SAMP>??>|"^.*$")**</SAMP></FONT>.
+            
+          </P>
+        </TD>
+      </TR>
+      <TR>
+        <TD VALIGN="TOP">
+          <IMG SRC="Images/green-ball-shadow.gif">
+        </TD>
+        <TD VALIGN="TOP">
+          <P>
+             A forest pattern consisting of a single tree pattern <I>tp</I>
+            matches a forest that contains a tree structurally matching
+            <I>tp</I>. 
+          </P>
+        </TD>
+      </TR>
+      <TR>
+        <TD VALIGN="TOP">
+          <IMG SRC="Images/green-ball-shadow.gif">
+        </TD>
+        <TD VALIGN="TOP">
+          <P>
+             A forest pattern <FONT><FONT><I>fp</I><SUB>1</SUB></FONT><SAMP>|</SAMP><FONT><I>fp</I><SUB>2</SUB></FONT></FONT>
+            matches a forest that matches either of the two forest patterns
+            <FONT><I>fp</I><SUB>1</SUB></FONT> or <FONT><I>fp</I><SUB>2</SUB></FONT>
+            
+          </P>
+        </TD>
+      </TR>
+      <TR>
+        <TD VALIGN="TOP">
+          <IMG SRC="Images/green-ball-shadow.gif">
+        </TD>
+        <TD VALIGN="TOP">
+          <P>
+             A forest pattern <FONT><FONT><I>fp</I><SUB>1</SUB></FONT><SAMP>&nbsp;</SAMP><FONT><I>fp</I><SUB>2</SUB></FONT></FONT>
+            matches a forest, if it is the concatenation of a forest <FONT><I>F</I><SUB>1</SUB></FONT>,
+            a white-space sequence and a forest <FONT><I>F</I><SUB>2</SUB></FONT>,
+            such that <FONT><I>F</I><SUB>1</SUB></FONT> and <FONT><I>F</I><SUB>2</SUB></FONT>
+            match <FONT><I>fp</I><SUB>1</SUB></FONT> and <FONT><I>fp</I><SUB>2</SUB></FONT>,
+            respectively. The form <FONT><FONT><I>fp</I><SUB>1</SUB></FONT><SAMP>,</SAMP><FONT><I>fp</I><SUB>2</SUB></FONT></FONT>
+            is similar, except that no white space is allowed between <FONT><I>F</I><SUB>1</SUB></FONT>
+            and <FONT><I>F</I><SUB>2</SUB></FONT> 
+          </P>
+        </TD>
+      </TR>
+      <TR>
+        <TD VALIGN="TOP">
+          <IMG SRC="Images/green-ball-shadow.gif">
+        </TD>
+        <TD VALIGN="TOP">
+          <P>
+             A forest pattern <FONT><I>fp</I><SAMP>?</SAMP></FONT> matches
+            a forest that either matches <I>fp</I> or is the empty forest.
+            It is an abbreviation for <FONT><SAMP>(</SAMP><I>fp</I><SAMP>|</SAMP><IMG SRC="Images/epsilon.gif"><SAMP>)</SAMP></FONT>.
+            
+          </P>
+        </TD>
+      </TR>
+      <TR>
+        <TD VALIGN="TOP">
+          <IMG SRC="Images/green-ball-shadow.gif">
+        </TD>
+        <TD VALIGN="TOP">
+          <P>
+             A forest pattern <FONT><I>fp</I><SAMP>*</SAMP></FONT> matches
+            a concatenation of zero or more forests matching <I>fp</I>, interspersed
+            with white space. The form <FONT><I>fp</I><SAMP>**</SAMP></FONT>
+            is analogous, except that no white space is allowed. Similarly,
+            <FONT><I>fp</I><SAMP>+</SAMP></FONT> and <FONT><I>fp</I><SAMP>++</SAMP></FONT>
+            require that at least one forest matching <I>fp</I> is present.
+            
+          </P>
+        </TD>
+      </TR>
+      <TR>
+        <TD VALIGN="TOP">
+          <IMG SRC="Images/green-ball-shadow.gif">
+        </TD>
+        <TD VALIGN="TOP">
+          <P>
+             Parentheses are used for disambiguating nested forest patterns.
+            The precedence of operators is such that <FONT><SAMP>?</SAMP></FONT>,
+            <FONT><SAMP>*</SAMP></FONT>, <FONT><SAMP>**</SAMP></FONT>, <FONT><SAMP>+</SAMP></FONT>
+            and <FONT><SAMP>++</SAMP></FONT> bind strongest, followed by the
+            concatenation operators, and <FONT><SAMP>||</SAMP></FONT> has
+            the lowest precedence. A tree pattern occurring in a forest pattern
+            must be parenthesized unless it consists of a single node pattern.
+            
+          </P>
+        </TD>
+      </TR>
+      <TR>
+        <TD VALIGN="TOP">
+          <IMG SRC="Images/green-ball-shadow.gif">
+        </TD>
+        <TD VALIGN="TOP">
+          <P>
+             A whole forest pattern implicitly allows a leading and
+             trailing sequence of arbitrary nodes. Preceding the
+             forest pattern with a <FONT><SAMP>^</SAMP></FONT> or
+             succeeding it with a <FONT><SAMP>$</SAMP></FONT>
+             prohibits the leading and trailing arbitrary sequence,
+             respectively. These two symbols are only allowed at the
+             start and end of a forest pattern. Prohibiting leading or
+             trailing white spaces too, can be achieved by preceding,
+             respectively following the forest pattern with
+             <font><samp>^,</samp><font> or <samp>,$</samp>.
+          </P>
+        </TD>
+      </TR>
+    </TABLE>
+    <P>
+       Specifying a structure qualifier
+       <FONT><SAMP>[</SAMP><I>fp</I><SAMP>]</SAMP></FONT> for a node
+       pattern <I>np</I> means that the sequence of children of a node
+       must contain a subsequence fulfilling the forest pattern
+       <I>fp</I>. If the qualifier is negated then they must not
+       contain a subsequence that match <I>fp</I>. Specifying two or
+       more structure qualifiers means that all of them must be
+       fulfilled: This is a way of expressing
+       <EM>conjunction</EM>. For instance:
+    </P>
+    <TABLE>
+      <TR>
+        <TD VALIGN="TOP">
+          <IMG SRC="Images/green-ball-shadow.gif">
+        </TD>
+        <TD VALIGN="TOP">
+          <P>
+             The node pattern <FONT><SAMP>a[b[c]]</SAMP></FONT> is
+             fulfilled by an <FONT><SAMP>a</SAMP></FONT> element that
+             has a child <FONT><SAMP>b</SAMP></FONT> which itself has
+             child with element type <FONT><SAMP>c</SAMP></FONT>.
+
+<!--Note that the blank between the <FONT><SAMP>c</SAMP></FONT> and
+the <FONT><SAMP>_</SAMP></FONT> is necessary for delimiting the name
+<FONT><SAMP>c</SAMP></FONT>, because <FONT><SAMP>c_</SAMP></FONT>
+would be recognized as a single name. -->
+
+          </P>
+        </TD>
+      </TR>
+      <TR>
+        <TD VALIGN="TOP">
+          <IMG SRC="Images/green-ball-shadow.gif">
+        </TD>
+        <TD VALIGN="TOP">
+          <P>
+             The node pattern <FONT><SAMP>a[^b[^c$]$]</SAMP></FONT> is fulfilled
+            only by an <FONT><SAMP>a</SAMP></FONT> element that has a single
+            child <FONT><SAMP>b</SAMP></FONT> which itself has a <FONT><SAMP>c</SAMP></FONT>
+            element as its only child. 
+          </P>
+        </TD>
+      </TR>
+      <TR>
+        <TD VALIGN="TOP">
+          <IMG SRC="Images/green-ball-shadow.gif">
+        </TD>
+        <TD VALIGN="TOP">
+          <P>
+             The node pattern <FONT><SAMP>a[(b|(//c))][!c]</SAMP></FONT>
+            is fulfilled by an element with type <FONT><SAMP>a</SAMP></FONT>
+            which has either a child labeled <FONT><SAMP>b</SAMP></FONT> or
+            a descendant labeled <FONT><SAMP>c</SAMP></FONT>, but it must
+            not have a child of type <FONT><SAMP>c</SAMP></FONT>, as claimed
+            by the second, negated qualifier. 
+          </P>
+        </TD>
+      </TR>
+      <TR>
+        <TD VALIGN="TOP">
+          <IMG SRC="Images/green-ball-shadow.gif">
+        </TD>
+        <TD VALIGN="TOP">
+          <P>
+             The node pattern <FONT><SAMP>&lt;</SAMP><SAMP>?^fxp-?>["forest"]</SAMP></FONT>
+            is fulfilled by a processing instruction whose target begins with
+            <FONT><SAMP>fxp-</SAMP></FONT> and whose text contains the word
+            <FONT><SAMP>forest</SAMP></FONT>. In a structure qualifier for
+            a processing instruction it makes no sense to specify something
+            other than a text pattern because processing instructions contain
+            only text. 
+          </P>
+        </TD>
+      </TR>
+    </TABLE>
+    <P>
+       Note the difference between the two tree patterns <FONT><SAMP>a/b[c]</SAMP></FONT>
+      and <FONT><SAMP>a/b/c</SAMP></FONT>. Within a structure qualifier, these
+      two patterns are equivalent, because they structurally match the same
+      trees, namely <FONT><SAMP>a</SAMP></FONT> elements with a <FONT><SAMP>b</SAMP></FONT>
+      child that has a child <FONT><SAMP>c</SAMP></FONT>. However, they locate
+      different nodes: <FONT><SAMP>a/b[c]</SAMP></FONT>
+      identifies the <FONT><SAMP>b</SAMP></FONT> whereas <FONT><SAMP>a/b/c</SAMP></FONT>
+      selects the <FONT><SAMP>c</SAMP></FONT> node. 
+    </P>
+    <P>
+      <IMG SRC="Images/shadow-small.jpg" ALT="-----------------" WIDTH="100%">
+    </P>
+    <H4>
+      <A NAME="CXTQUAL"></A>Context Qualifiers
+    </H4>
+    <P>
+       Structure qualifiers impose regular conditions on the children of a
+      node. But they can not be used for constraining the position of the
+      next node on the path among its siblings. Consider, e.g., the path pattern
+      <FONT><SAMP>a/b</SAMP></FONT>, and suppose we want to specify that the
+      <FONT><SAMP>b</SAMP></FONT> must be the first child of the <FONT><SAMP>a</SAMP></FONT>.
+      This is not possible with a structure qualifier. Even if we ensure that
+      the first child is a <FONT><SAMP>b</SAMP></FONT> element by specifying
+      <FONT><SAMP>a[^b]/b</SAMP></FONT>, the
+      pattern still locates all <FONT><SAMP>b</SAMP></FONT> children of <FONT><SAMP>a</SAMP></FONT>.
+      
+    </P>
+    <P>
+       In order to overcome this deficiency, we add another kind of qualifiers:
+      <EM>context qualifiers</EM>. For a node pattern that can match an element
+      node, one optional context qualifier may be given. Note that it would
+      not make sense to specify a context qualifier for text nodes or processing
+      instructions: A text node has no children, and a processing instruction
+      can only have a single child. 
+    </P>
+    <P>
+      A context qualifier is a qualifier containing at least
+      one occurrence of the <SAMP>#</SAMP> symbol. The # is a
+      place-holder for the child of the node, where the path
+      continues. This can be seen most easily from examples:
+    </P>
+    <TABLE>
+      <TR>
+        <TD VALIGN="TOP">
+          <IMG SRC="Images/green-ball-shadow.gif">
+        </TD>
+        <TD VALIGN="TOP">
+          <P>
+             In an element of type <FONT><SAMP>a</SAMP></FONT>, the tree pattern
+            <FONT><SAMP>a[^#]/b</SAMP></FONT> identifies the first child of
+            <FONT><SAMP>a</SAMP></FONT> if that child has element type <FONT><SAMP>b</SAMP></FONT>.
+            This is the solution to the introductory example above. 
+          </P>
+        </TD>
+      </TR>
+      <TR>
+        <TD VALIGN="TOP">
+          <IMG SRC="Images/green-ball-shadow.gif">
+        </TD>
+        <TD VALIGN="TOP">
+          <P>
+             Consider the tree pattern
+             <FONT><SAMP>.[^a*#c*$]/b</SAMP></FONT>.  In an arbitrary
+             tree <I>T</I>, it locates a <FONT><SAMP>b</SAMP></FONT>
+             child of <I>T</I>'s root all of whose left and right
+             siblings are element nodes of type
+             <FONT><SAMP>a</SAMP></FONT> and
+             <FONT><SAMP>c</SAMP></FONT>, respectively.
+          </P>
+        </TD>
+      </TR>
+      <TR>
+        <TD VALIGN="TOP">
+          <IMG SRC="Images/green-ball-shadow.gif">
+        </TD>
+        <TD VALIGN="TOP">
+          <P>
+             <FONT><SAMP>a[^#$]//b</SAMP></FONT> locates in an element of type
+            <FONT><SAMP>a</SAMP></FONT> all descendants with element type
+            <FONT><SAMP>b</SAMP></FONT>, provided that the <FONT><SAMP>a</SAMP></FONT>
+            has only a single child. Note that this child may have arbitrarily
+            many children: The context qualifier refers only to the next node
+            on the path and does not extend to its descendants, regardless
+            of operator <FONT><SAMP>//</SAMP></FONT>. 
+          </P>
+        </TD>
+      </TR>
+    </TABLE>
+    <P>
+       Since a context qualifier can occur at any node pattern, it can
+       also be part of a tree pattern within a structure qualifier,
+       e.g., in <FONT><SAMP>a[(b[c#c]/b)]</SAMP></FONT>.  Note
+       however, that such a context qualifier can be replaced by a
+       structure qualifier, in this case yielding
+       <FONT><SAMP>a[(b[c&nbsp;b&nbsp;c])]</SAMP></FONT>.
+      
+    </P>
+    <P>
+      <IMG SRC="Images/shadow-small.jpg" ALT="-----------------" WIDTH="100%">
+    </P>
+    <H4>
+      <A NAME="CXTPAT"></A>Context Patterns and Query Patterns
+    </H4>
+    <P>
+       A pattern identifies nodes in an XML document tree. But the input
+      to the pattern matcher is not a single tree: It is the forest consisting
+      of the document element and all preceding or following processing instructions.
+      We therefore allow the specification of structure and context qualifiers
+      also for this top-level forest. These qualifiers together with a tree
+      pattern form a <EM>context pattern</EM>. A <EM>query pattern</EM> is then
+      a disjunction of context patterns. 
+    </P>
+    <TABLE BGCOLOR="#FFFFD0" WIDTH="100%" BORDER="1" ALIGN="CENTER" CELLPADDING="5">
+      <TR>
+        <TD>
+          <TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0">
+            <TR>
+              <TD HEIGHT="5">
+              </TD>
+            </TR>
+            <TR>
+              <TD ALIGN="RIGHT">
+                <I>QueryPattern</I>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">::=</FONT></B>
+              </TD>
+              <TD>
+                <I>ContextPattern</I><SAMP> </SAMP><B><FONT COLOR="#00C000">(</FONT></B><SAMP>
+                  ||</SAMP><I> ContextPattern</I><SAMP> </SAMP><B><FONT COLOR="#00C000">)</FONT></B><B><FONT COLOR="#00C000">*</FONT></B>
+              </TD>
+            </TR>
+            <TR>
+              <TD HEIGHT="5">
+              </TD>
+            </TR>
+            <TR>
+              <TD ALIGN="RIGHT">
+                <I>ContextPattern</I>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">::=</FONT></B>
+              </TD>
+              <TD>
+                <I>Pattern</I>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>Qualifier</I><B><FONT COLOR="#00C000">*</FONT></B> <I>Pattern</I>
+              </TD>
+            </TR>
+          </TABLE>
+        </TD>
+      </TR>
+    </TABLE>
+    <P>
+       Let us describe the meaning of query patterns by examples: 
+    </P>
+    <TABLE>
+      <TR>
+        <TD VALIGN="TOP">
+          <IMG SRC="Images/green-ball-shadow.gif">
+        </TD>
+        <TD VALIGN="TOP">
+          <P>
+             The pattern
+             <FONT><SAMP>[a]//b&nbsp;||&nbsp;[c]//d</SAMP></FONT>
+             locates all <FONT><SAMP>b</SAMP></FONT> elements in an
+             XML document whose root element has type
+             <FONT><SAMP>a</SAMP></FONT>, whereas it locates all
+             <FONT><SAMP>d</SAMP></FONT> elements if the root element
+             type is <FONT><SAMP>c</SAMP></FONT>.
+          </P>
+        </TD>
+      </TR>
+      <TR>
+        <TD VALIGN="TOP">
+          <IMG SRC="Images/green-ball-shadow.gif">
+        </TD>
+        <TD VALIGN="TOP">
+          <P>
+             <FONT><SAMP>[#_</SAMP><SAMP>&lt;</SAMP><SAMP>*>]/</SAMP><SAMP>&lt;</SAMP><SAMP>??></SAMP></FONT>
+            selects all processing instructions that come before the document
+            element, whereas <FONT><SAMP>[</SAMP><SAMP>&lt;</SAMP><SAMP>*>_#]/</SAMP><SAMP>&lt;</SAMP><SAMP>??></SAMP></FONT>
+            identifies those which come after the document element. 
+          </P>
+        </TD>
+      </TR>
+    </TABLE>
+    <P>
+      <IMG SRC="Images/shadow-med.jpg" ALT="-----------------" WIDTH="100%">
+    </P>
+    <H3>
+      <A NAME="PAT-TWO"></A> Two more sophisticated Examples 
+    </H3>
+    <P>
+       Let us illustrate the use of patterns by some more sophisticated examples
+      from real-world applications. 
+    </P>
+    <P>
+      <IMG SRC="Images/shadow-small.jpg" ALT="-----------------" WIDTH="100%">
+    </P>
+    <H4>
+       Querying the XML recommendation 
+    </H4>
+    <P>
+       The first example queries the <A HREF="http://www.w3.org/TR/1998/REC-xml-19980210">XML
+        recommendation</A>. This document defines the syntax of XML by means
+      of an EBNF grammar whose rules are scattered over the whole document.
+      An XML application developer who wants to use this specification as
+      a reference has to search through the document in order to find a rule.
+      In the <A HREF="http://www.w3.org/TR/1998/REC-xml-19980210.xml">XML
+        version</A> of the recommendation, each rule is given by a <FONT><SAMP>prod</SAMP></FONT>
+      element, which has an attribute named <FONT><SAMP>id</SAMP></FONT> for
+      referral and contains an <FONT><SAMP>lhs</SAMP></FONT> element and one
+      or more <FONT><SAMP>rhs</SAMP></FONT> elements. The <FONT><SAMP>lhs</SAMP></FONT>
+      element specifies the nonterminal defined by this rule; the <FONT><SAMP>rhs</SAMP></FONT>
+      elements give the right-hand sides for this nonterminal. Each nonterminal
+      occurring on such a right-hand side is represented by an <FONT><SAMP>nt</SAMP></FONT>
+      element which carries an attribute named <FONT><SAMP>def</SAMP></FONT>
+      identifying the <FONT><SAMP>prod</SAMP></FONT> element which defines
+      this nonterminal. For instance, the production for nonterminal <FONT><SAMP>document</SAMP></FONT>,
+      which is formatted as 
+    </P>
+    <blockquote>
+      <PRE>[1] document ::= prolog element Misc*</PRE>
+    </blockquote>
+    <P>
+       is given by the following element: 
+    </P>
+    <TABLE BGCOLOR="#C0E0FF" WIDTH="100%" BORDER="1" ALIGN="CENTER" CELLPADDING="5">
+      <TR>
+        <TD>
+          <PRE>&lt;prod id='NT-document'>
+  &lt;lhs>document&lt;/lhs>
+  &lt;rhs>
+    &lt;nt def='NT-prolog'>prolog&lt;/nt> 
+    &lt;nt def='NT-element'>element&lt;/nt> 
+    &lt;nt def='NT-Misc'>Misc&lt;/nt>*
+  &lt;/rhs>
+&lt;/prod>
+</PRE>
+        </TD>
+      </TR>
+    </TABLE>
+    <P>
+       Note that the numbering of productions is done by the formatting process;
+      the XML element therefore does not specify the production's number <FONT><SAMP>[1]</SAMP></FONT>.
+      Let us now formulate some queries on this document: 
+    </P>
+    <TABLE>
+      <TR>
+        <TD VALIGN="TOP">
+          <IMG SRC="Images/green-ball-shadow.gif">
+        </TD>
+        <TD VALIGN="TOP">
+          <P>
+             The pattern <FONT><SAMP>//prod[@id='NT-Char']</SAMP></FONT> locates
+            the production whose <FONT><SAMP>id</SAMP></FONT> attribute is
+            exactly <FONT><SAMP>NT-Char</SAMP></FONT>, whereas <FONT><SAMP>//prod[@id~'Char']</SAMP></FONT>
+            matches all <FONT><SAMP>prod</SAMP></FONT> elements for which
+            this attribute contains the word <FONT><SAMP>Char</SAMP></FONT>,
+            thus also allowing <FONT><SAMP>CharData</SAMP></FONT> or <FONT><SAMP>NameChar</SAMP></FONT>.
+            
+          </P>
+        </TD>
+      </TR>
+      <TR>
+        <TD VALIGN="TOP">
+          <IMG SRC="Images/green-ball-shadow.gif">
+        </TD>
+        <TD VALIGN="TOP">
+          <P>
+             If we don't want to use the <FONT><SAMP>id</SAMP></FONT> attribute
+            for selecting the productions - perhaps we are not sure whether
+            each <FONT><SAMP>prod</SAMP></FONT> element really has an <FONT><SAMP>id</SAMP></FONT>
+            attribute - we can also specify a structure qualifier for the
+            <FONT><SAMP>lhs</SAMP></FONT> child: <FONT><SAMP>//prod[(lhs/'Char')]</SAMP></FONT>
+            selects all productions whose <FONT><SAMP>lhs</SAMP></FONT> child
+            contains a text node with the word <FONT><SAMP>Char</SAMP></FONT>.
+            
+          </P>
+        </TD>
+      </TR>
+      <TR>
+        <TD VALIGN="TOP">
+          <IMG SRC="Images/green-ball-shadow.gif">
+        </TD>
+        <TD VALIGN="TOP">
+          <P>
+             <FONT><SAMP>//prod[(lhs['^Char$'])]/rhs</SAMP></FONT> selects
+            all <FONT><SAMP>rhs</SAMP></FONT> children of productions whose
+            left-hand side is exactly <FONT><SAMP>Char</SAMP></FONT>. 
+          </P>
+        </TD>
+      </TR>
+      <TR>
+        <TD VALIGN="TOP">
+          <IMG SRC="Images/green-ball-shadow.gif">
+        </TD>
+        <TD VALIGN="TOP">
+          <P>
+             The pattern <FONT><SAMP>//prod[^#_(rhs/nt[@def~'Char'])]/lhs/''</SAMP></FONT>
+            locates the text of the left-hand sides of productions whose right-hand
+            sides use a nonterminal whose name contains <FONT><SAMP>Char</SAMP></FONT>.
+            This can be expressed more shortly - but less precisely - by <FONT><SAMP>//prod[(//nt/'Char')]/lhs/''</SAMP></FONT>.
+            
+          </P>
+        </TD>
+      </TR>
+      <TR>
+        <TD VALIGN="TOP">
+          <IMG SRC="Images/green-ball-shadow.gif">
+        </TD>
+        <TD VALIGN="TOP">
+          <P>
+             In order to find out the number of the production for <FONT><SAMP>Char</SAMP></FONT>,
+            we can count the matches of the pattern <FONT><SAMP>//.[#_(//prod[@id='NT-element'])]//prod</SAMP></FONT>
+            and add one. The pattern identifies all <FONT><SAMP>prod</SAMP></FONT>
+            nodes that come before the production with identifier <FONT><SAMP>NT-element</SAMP></FONT>
+            in document order. Note that due to the use of operator <FONT><SAMP>//</SAMP></FONT>
+            for both <FONT><SAMP>prod</SAMP></FONT> subpatterns, the <FONT><SAMP>prod</SAMP></FONT>
+            elements need not be siblings. They need only have ancestors which
+            are siblings. 
+          </P>
+        </TD>
+      </TR>
+    </TABLE>
+    <P>
+      <IMG SRC="Images/shadow-small.jpg" ALT="-----------------" WIDTH="100%">
+    </P>
+    <H4>
+       Querying Shakespeare 
+    </H4>
+    <P>
+       The second example deals with Shakespeare's play <A HREF="http://metalab.unc.edu/xml/examples/shakespeare/macbeth.xml"><I>Macbeth</I></A>.
+      Encoded in XML, a scene basically has a title and contains a sequence
+      of speeches, each represented by a <FONT><SAMP>SPEECH</SAMP></FONT>
+      element, interspersed with stage directions. Each speech contains a
+      <FONT><SAMP>SPEAKER</SAMP></FONT> element and a sequence of lines containing
+      plain text, for instance: 
+    </P>
+    <TABLE BGCOLOR="#C0E0FF" WIDTH="100%" BORDER="1" ALIGN="CENTER" CELLPADDING="5">
+      <TR>
+        <TD>
+          <PRE>
+&lt;SCENE>
+  &lt;TITLE>SCENE I.  A desert place.&lt;/TITLE>
+  &lt;STAGEDIR>Thunder and lightning. Enter three Witches&lt;/STAGEDIR>
+  &lt;SPEECH>
+    &lt;SPEAKER>First Witch&lt;/SPEAKER>
+    &lt;LINE>When shall we three meet again&lt;/LINE>
+    &lt;LINE>In thunder, lightning, or in rain?&lt;/LINE>
+  &lt;/SPEECH>
+  &lt;SPEECH>
+    &lt;SPEAKER>Second Witch&lt;/SPEAKER>
+    &lt;LINE>When the hurlyburly's done,&lt;/LINE>
+    &lt;LINE>When the battle's lost and won.&lt;/LINE>
+  &lt;/SPEECH>
+  &lt;SPEECH>
+    &lt;SPEAKER>Third Witch&lt;/SPEAKER>
+    &lt;LINE>That will be ere the set of sun.&lt;/LINE>
+  &lt;/SPEECH>
+  ...
+  &lt;STAGEDIR>Exeunt&lt;/STAGEDIR>
+&lt;/SCENE></PRE>
+        </TD>
+      </TR>
+    </TABLE>
+    <P>
+       Let us formulate some queries for this document: 
+    </P>
+    <TABLE>
+      <TR>
+        <TD VALIGN="TOP">
+          <IMG SRC="Images/green-ball-shadow.gif">
+        </TD>
+        <TD VALIGN="TOP">
+          <P>
+             The pattern <FONT><SAMP>//SPEECH[(LINE/'thunder')]</SAMP></FONT>
+            selects all speeches containing a line with the word <FONT><SAMP>thunder</SAMP></FONT>.
+            
+          </P>
+        </TD>
+      </TR>
+      <TR>
+        <TD VALIGN="TOP">
+          <IMG SRC="Images/green-ball-shadow.gif">
+        </TD>
+        <TD VALIGN="TOP">
+          <P>
+             The pattern <FONT><SAMP>//SPEECH[(//LINE/'hurlyburly')]/SPEAKER/.</SAMP></FONT>
+            selects the speaker of a line containing the word <FONT><SAMP>hurlyburly</SAMP></FONT>,
+            that is, the <FONT><SAMP>Second Witch</SAMP></FONT>. 
+          </P>
+        </TD>
+      </TR>
+      <TR>
+        <TD VALIGN="TOP">
+          <IMG SRC="Images/green-ball-shadow.gif">
+        </TD>
+        <TD VALIGN="TOP">
+          <P>
+             The same result is produced by the following pattern, using a
+            context qualifier: <FONT><SAMP>//SPEECH[#_(LINE/'hurlyburly')]/SPEAKER/.</SAMP></FONT>
+            This pattern is much more precise than the previous one: It requires
+            that the <FONT><SAMP>SPEAKER</SAMP></FONT> precedes the <FONT><SAMP>LINE</SAMP></FONT>
+            elements within a <FONT><SAMP>SPEECH</SAMP></FONT>, and that the
+            <FONT><SAMP>LINE</SAMP></FONT> elements are direct descendants,
+            i.e., children of the <FONT><SAMP>SPEECH</SAMP></FONT> node. 
+          </P>
+        </TD>
+      </TR>
+      <TR>
+        <TD VALIGN="TOP">
+          <IMG SRC="Images/green-ball-shadow.gif">
+        </TD>
+        <TD VALIGN="TOP">
+          <P>
+             The pattern <FONT><SAMP>//SPEECH[(SPEAKER/'Second</SAMP><SAMP>&nbsp;</SAMP><SAMP>Witch')_#]/LINE/''</SAMP></FONT>
+            locates all text nodes in lines spoken by the second witch. 
+          </P>
+        </TD>
+      </TR>
+      <TR>
+        <TD VALIGN="TOP">
+          <IMG SRC="Images/green-ball-shadow.gif">
+        </TD>
+        <TD VALIGN="TOP">
+          <P>
+             The pattern <FONT><SAMP>//SPEECH[(LINE/'hurlyburly')#]/LINE</SAMP></FONT>
+            identifies the line immediately following after the line containing
+            <FONT><SAMP>hurlyburly</SAMP></FONT>, whereas <FONT><SAMP>//*[(SPEECH//'hurlyburly')#]/SPEECH/SPEAKER</SAMP></FONT>
+            selects the speaker who responds to that speech, that is, the
+            <FONT><SAMP>Third Witch</SAMP></FONT>. 
+          </P>
+        </TD>
+      </TR>
+      <TR>
+        <TD VALIGN="TOP">
+          <IMG SRC="Images/green-ball-shadow.gif">
+        </TD>
+        <TD VALIGN="TOP">
+          <P>
+             <FONT><SAMP>//*[^</SAMP><SAMP>&lt;</SAMP><SAMP>!ACT>*#]/ACT[^</SAMP><SAMP>&lt;</SAMP><SAMP>!SCENE>*#]/SCENE/TITLE/''</SAMP></FONT>
+            selects the title text of the first scene in the first act, namely:
+            <FONT><SAMP>SCENE</SAMP><SAMP>&nbsp;</SAMP><SAMP>I.</SAMP><SAMP>&nbsp;</SAMP><SAMP>&nbsp;</SAMP><SAMP>A</SAMP><SAMP>&nbsp;</SAMP><SAMP>desert</SAMP><SAMP>&nbsp;</SAMP><SAMP>place.</SAMP></FONT>
+            
+          </P>
+        </TD>
+      </TR>
+      <TR>
+        <TD VALIGN="TOP">
+          <IMG SRC="Images/green-ball-shadow.gif">
+        </TD>
+        <TD VALIGN="TOP">
+          <P>
+             <FONT><SAMP>//SCENE[(//SPEAKER/'Witch')][(//SPEAKER/'MACBETH')]/TITLE</SAMP></FONT>
+            locates the titles of scenes in which both Macbeth and a witch
+            speak. 
+          </P>
+        </TD>
+      </TR>
+      <TR>
+        <TD VALIGN="TOP">
+          <IMG SRC="Images/green-ball-shadow.gif">
+        </TD>
+        <TD VALIGN="TOP">
+          <P>
+             <FONT><SAMP>//SCENE[(TITLE/'desert')]/*[!(SPEAKER/'Witch')]/LINE</SAMP></FONT>
+            locates the lines in a scene whose title contains the word <FONT><SAMP>desert</SAMP></FONT>,
+            which are not spoken by a witch. 
+          </P>
+        </TD>
+      </TR>
+    </TABLE>
+    <P>
+      <IMG SRC="Images/shadow-med.jpg" ALT="-----------------" WIDTH="100%">
+    </P>
+    <H3>
+      <A NAME="PAT_SYN"></A> Summary of the Unary Patterns Syntax 
+    </H3>
+    <P>
+       The following grammar summarizes the syntax of unary patterns: 
+    </P>
+    <TABLE BGCOLOR="#FFFFD0" WIDTH="100%" BORDER="1" ALIGN="CENTER" CELLPADDING="5">
+      <TR>
+        <TD>
+          <TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0">
+            <TR>
+              <TD HEIGHT="5">
+              </TD>
+            </TR>
+            <TR>
+              <TD ALIGN="RIGHT">
+                <I>QueryPattern</I>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">::=</FONT></B>
+              </TD>
+              <TD>
+                <I>ContextPattern</I><SAMP> </SAMP><B><FONT COLOR="#00C000">(</FONT></B><SAMP>
+                  ||</SAMP><I> ContextPattern</I><SAMP> </SAMP><B><FONT COLOR="#00C000">)</FONT></B><B><FONT COLOR="#00C000">*</FONT></B>
+              </TD>
+            </TR>
+            <TR>
+              <TD HEIGHT="5">
+              </TD>
+            </TR>
+            <TR>
+              <TD ALIGN="RIGHT">
+                <I>ContextPattern</I>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">::=</FONT></B>
+              </TD>
+              <TD>
+                <I>TopPattern</I>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>Qualifier</I><B><FONT COLOR="#00C000">*</FONT></B> <I>TopPattern</I>
+              </TD>
+            </TR>
+            <TR><TD HEIGHT="5"></TD></TR>
+            <tr>
+              <TD ALIGN="RIGHT"><I>TopPattern</I></TD>
+              <TD ALIGN="MIDDLE"><B><FONT COLOR="#00C000">::=</FONT></B> </TD>
+              <td><i>Pattern</i></td>
+            </tr>
+            <tr>
+              <td></td>
+              <TD ALIGN="MIDDLE"><B><FONT COLOR="#00C000">|</FONT></B></TD>
+              <td><i>(ConjPath) NodePattern</i></td>
+            </tr>        
+            <TR><TD HEIGHT="5"></TD></TR>
+            <tr>
+              <TD ALIGN="RIGHT"><I>ConjPath</I></TD>
+              <TD ALIGN="MIDDLE"><B><FONT COLOR="#00C000">::=</FONT></B> </TD>
+              <td><i>NegPath</i></td>
+            </tr>
+            <tr>
+              <td></td>
+              <TD ALIGN="MIDDLE"><B><FONT COLOR="#00C000">|</FONT></B></TD>
+              <td><i>NegPath &amp; ConjPath</i></td>
+            </tr>
+            <TR><TD HEIGHT="5"></TD></TR>
+            <tr>
+              <TD ALIGN="RIGHT"><I>NegPath</I></TD>
+              <TD ALIGN="MIDDLE"><B><FONT COLOR="#00C000">::=</FONT></B> </TD>
+              <td><i>RootPath</i></td>
+            </tr>
+            <tr>
+              <td></td>
+              <TD ALIGN="MIDDLE"><B><FONT COLOR="#00C000">|</FONT></B></TD>
+              <td><i>!RootPath</i></td>
+            </tr>
+            <tr>
+              <td></td>
+              <TD ALIGN="MIDDLE"><B><FONT COLOR="#00C000">|</FONT></B></TD>
+              <td><i>(!RootPath)</i></td>
+            </tr>
+            <TR><TD HEIGHT="5"></TD></TR>
+            <tr>
+              <TD ALIGN="RIGHT"><I>RootPath</I></TD>
+              <TD ALIGN="MIDDLE"><B><FONT COLOR="#00C000">::=</FONT></B> </TD>
+              <td><i>Path</i></td>
+            </tr>
+            <tr>
+              <td></td>
+              <TD ALIGN="MIDDLE"><B><FONT COLOR="#00C000">|</FONT></B></TD>
+              <td><i>/Path</i></td>
+            </tr>
+            <tr>
+              <td></td>
+              <TD ALIGN="MIDDLE"><B><FONT COLOR="#00C000">|</FONT></B></TD>
+              <td><i>//Path</i></td>
+            </tr>
+            <TR>
+              <TD HEIGHT="5">
+              </TD>
+            </TR>
+            <TR>
+              <TD ALIGN="RIGHT">
+                <I>Pattern</I>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">::=</FONT></B>
+              </TD>
+              <TD>
+                <I>Path NodePattern</I>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>NodePattern</I><SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <SAMP>(</SAMP><I>Pattern</I><SAMP>)</SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>Pattern</I><SAMP> || </SAMP><I>Pattern</I>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>/Pattern</I><SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>//Pattern</I><SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD HEIGHT="5">
+              </TD>
+            </TR>
+            <TR>
+              <TD ALIGN="RIGHT">
+                <I>NodePattern</I>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">::=</FONT></B>
+              </TD>
+              <TD>
+                <SAMP>"</SAMP><I>TextPattern</I><SAMP>"</SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <SAMP>'</SAMP><I>TextPattern</I><SAMP>'</SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <SAMP>&lt;</SAMP><SAMP>?</SAMP><I>TextPattern</I><SAMP>?>
+                  </SAMP><I>Qualifier</I><B><FONT COLOR="#00C000">*</FONT></B>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <SAMP>. </SAMP><I>AttributeQualifier</I><B><FONT COLOR="#00C000">*</FONT></B><SAMP>
+                  </SAMP><I>Qualifier</I><B><FONT COLOR="#00C000">*</FONT></B>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>NodeTest</I><SAMP> </SAMP><I>AttributeQualifier</I><B><FONT COLOR="#00C000">*</FONT></B><SAMP>
+                  </SAMP><I>Qualifier</I><B><FONT COLOR="#00C000">*</FONT></B>
+              </TD>
+            </TR>
+            <TR>
+              <TD HEIGHT="5">
+              </TD>
+            </TR>
+            <TR>
+              <TD HEIGHT="5">
+              </TD>
+            </TR>
+            <TR>
+              <TD ALIGN="RIGHT">
+                <I>NodeTest</I>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">::=</FONT></B>
+              </TD>
+              <TD>
+                <SAMP>*</SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>ElementType</I>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <SAMP>&lt;</SAMP><I>ElementTypePattern</I><SAMP>></SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD HEIGHT="5">
+              </TD>
+            </TR>
+            <TR>
+              <TD ALIGN="RIGHT">
+                <I>ElementTypePattern</I>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">::=</FONT></B>
+              </TD>
+              <TD>
+                <SAMP>*</SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>ElementType</I><SAMP> </SAMP><B><FONT COLOR="#00C000">(</FONT></B><SAMP>
+                  | </SAMP><I>ElementType</I><SAMP> </SAMP><B><FONT COLOR="#00C000">)</FONT></B><B><FONT COLOR="#00C000">*</FONT></B>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <SAMP>!</SAMP><I>ElementType</I><SAMP> </SAMP><B><FONT COLOR="#00C000">(</FONT></B><SAMP>
+                  | </SAMP><I>ElementType</I><SAMP> </SAMP><B><FONT COLOR="#00C000">)</FONT></B><B><FONT COLOR="#00C000">*</FONT></B>
+              </TD>
+            </TR>
+            <TR>
+              <TD HEIGHT="5">
+              </TD>
+            </TR>
+            <TR>
+              <TD ALIGN="RIGHT">
+                <I>AttributeQualifier</I>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">::=</FONT></B>
+              </TD>
+              <TD>
+                <SAMP>[@</SAMP><I>AttributeTest</I><SAMP>]</SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <SAMP>[!@</SAMP><I>AttributeTest</I><SAMP>]</SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD HEIGHT="5">
+              </TD>
+            </TR>
+            <TR>
+              <TD ALIGN="RIGHT">
+                <I>AttributeTest</I>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">::=</FONT></B>
+              </TD>
+              <TD>
+                <I>AttributeName</I>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>AttributeName</I><SAMP>='</SAMP><I>TreePattern</I><SAMP>'</SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>AttributeName</I><SAMP>="</SAMP><I>TreePattern</I><SAMP>"</SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>AttributeName</I><SAMP>~'</SAMP><I>TreePattern</I><SAMP>'</SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>AttributeName</I><SAMP>~"</SAMP><I>TreePattern</I><SAMP>"</SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD HEIGHT="5">
+              </TD>
+            </TR>
+            <TR>
+              <TD ALIGN="RIGHT">
+                <I>Path</I>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">::=</FONT></B>
+              </TD>
+              <TD>
+                <I>NodePattern/</I>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>NodePattern//</I>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>Path<SAMP> || </SAMP>Path</I>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>(Path)</I>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>Path Path</I>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>Path?</I>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>Path+</I>
+              </TD>
+            </TR>
+	    <TR>
+              <TD HEIGHT="5">
+              </TD>
+            </TR>
+            <TR>
+              <TD ALIGN="RIGHT">
+                <I>Qualifier</I>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">::=</FONT></B>
+              </TD>
+              <TD>
+                <SAMP>[</SAMP><I>ForestPattern</I><SAMP>]</SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <SAMP>[!</SAMP><I>ForestPattern</I><SAMP>]</SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD HEIGHT="5">
+              </TD>
+            </TR>
+            <TR>
+              <TD ALIGN="RIGHT">
+                <I>ForestPattern</I>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">::=</FONT></B>
+              </TD>
+              <TD>
+                <SAMP>^</SAMP><B><FONT COLOR="#00C000">?</FONT></B><I>ForestPat</I><SAMP>$</SAMP><B><FONT COLOR="#00C000">?</FONT></B>
+              </TD>
+            </TR>
+            <TR>
+              <TD HEIGHT="5">
+              </TD>
+            </TR>
+            <TR>
+              <TD ALIGN="RIGHT">
+                <I>ForestPat</I>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">::=</FONT></B>
+              </TD>
+              <TD>
+                <IMG SRC="Images/epsilon.gif"><SAMP> </SAMP><B><FONT COLOR="#00C000">|</FONT></B><SAMP>
+                  _ </SAMP><B><FONT COLOR="#00C000">|</FONT></B><SAMP> ~</SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>Pattern</I>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <SAMP>(</SAMP><I>ForestPat</I><SAMP>)</SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>ForestPat</I><SAMP>?</SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>ForestPat</I><SAMP>*</SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>ForestPat</I><SAMP>**</SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>ForestPat</I><SAMP>+</SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>ForestPat</I><SAMP>++</SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>ForestPat</I><SAMP> </SAMP><I>ForestPat</I>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>ForestPat</I><SAMP>, </SAMP><I>ForestPat</I>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>ForestPat</I><SAMP> | </SAMP><I>ForestPat</I>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>#</I>
+              </TD>
+            </TR>
+            <TR>
+              <TD HEIGHT="5">
+              </TD>
+            </TR>
+          </TABLE>
+        </TD>
+      </TR>
+    </TABLE>
+    <P>
+       Observe that in order to avoid syntactical ambiguities, a
+       pattern occurring in a forest pattern
+       must be enclosed in parentheses unless it is just a node
+       pattern. Otherwise the forest pattern
+       <FONT><SAMP>/a</SAMP><SAMP>&nbsp;</SAMP><SAMP>/b</SAMP></FONT>
+       could be interpreted as a sequence of patterns
+       <FONT><SAMP>/a</SAMP></FONT> and <FONT><SAMP>/b</SAMP></FONT>,
+       or as the single pattern <FONT><SAMP>/a/b</SAMP></FONT>.
+    </P>
+
+    <P>
+      <IMG SRC="Images/shadow-big.jpg" ALT="-----------------" WIDTH="100%">
+    </P>
+    <H2>
+      <A NAME="PAT-BINARY">Binary Queries</A>
+    </H2>
+    
+    <p>Rather than finding individual nodes in the input, it is
+    sometimes useful to identify pairs of nodes which are related in
+    some specified way. This is done via the so called <i>binary
+    queries</i>.</p>
+
+    <p>Consider for example the following unary pattern which
+    identifies all the book titles whose author's names end in
+    "escu":</p>
+
+    <p><blockquote><samp>//book[(author/"escu$")]/title</samp></blockquote></p>
+
+    <p>Suppose we want to identify the titles as above, but together
+    with the authors of the books with these titles. We specify that
+    we want to locate a <samp>title</samp> node as with the pattern
+    above. In order to locate the <samp>author</samp> node
+    corresponding to a title, we need to specify the relation between
+    the two nodes. We specify this in a simple, intuitive way, by
+    preceding the node pattern of the second node in the relation by
+    the symbol <samp>%</samp>. Thus, the binary query which
+    simultaneously reports the authors having names ending in "escu"
+    and the titles of their books is:</p>
+
+    <p><blockquote><samp>//book[(%author/"escu$")]/title</samp></blockquote></p>
+
+   <p>Strictly speaking, a binary match is a pair. The first node in
+   the pair is called <i>primary match</i>. The second node in the
+   pair is a node related to the first node as specified by the
+   <samp>%</samp> symbol and is called <i>secondary match</i>. In
+   practice, however, rather than reporting each primary and secondary
+   match separately, if there are more secondary matches related to a
+   same primary match, they are reported at once together with the
+   primary match.  The output is a sequence of <samp>match</samp> XML
+   elements containing a <samp>primary</samp> element for each primary
+   match, followed by a sequence of <samp>secondary</samp> elements
+   for each corresponding secondary match. Each of these elements
+   contains a <samp>position</samp> and a <samp>node</samp> element
+   reporting the position in the input file and the node itself
+   respectively.</p>
+
+   <p>The binary query above considered over the input file <samp>input.xml</samp>:</p>
+
+    <TABLE BGCOLOR="#C0E0FF" WIDTH="100%" BORDER="1" ALIGN="CENTER" CELLPADDING="5">
+      <TR>
+        <TD>
+          <PRE>&lt;library>
+  &lt;book>
+    &lt;author>Mihai Eminescu&lt;/author>
+    &lt;price>10&lt;/price>
+    &lt;title>Blaue Blume&lt;/title>
+  &lt;/book>
+  &lt;book>
+    &lt;author>Paulo Coelho&lt;/author>
+    &lt;title>Veronika changes her mind&lt;/title>
+  &lt;/book>
+&lt;/library></PRE>
+        </TD>
+      </TR>
+    </TABLE>
+
+    <p>produces:</p>
+
+    <TABLE BGCOLOR="#C0E0FF" WIDTH="100%" BORDER="1" ALIGN="CENTER" CELLPADDING="5">
+      <TR>
+        <TD>
+          <PRE>&lt;match>
+  &lt;primary>
+    &lt;position>[input.xml:5.5]&lt;/position>
+    &lt;node>&lt;title>Blaue Blume&lt;/title>&lt;/node>
+  &lt;/primary>
+  &lt;secondary>
+    &lt;position>[input.xml:3.5]&lt;/position>
+    &lt;node>&lt;author>Mihai Eminescu&lt;/author>&lt;/node>
+  &lt;/secondary>
+&lt;/match></PRE>
+        </TD>
+      </TR>
+    </TABLE>
+
+    <p>It is possible to locate a primary match together with more
+    than one set of related nodes. Each set of related nodes is
+    specified by a <samp>%</samp> symbol preceding the corresponding
+    node pattern. The sets of secondary matches are then reported in
+    the order of the occurrences of the <samp>%</samp> symbols in the
+    pattern.</p>
+
+    <p>The query
+    <blockquote><samp>//book[%price][(%author/"escu$")]/title</samp></blockquote>
+    identifies the title of the books which have a price indication
+    and whose author name end in "escu", together with this price and
+    the author:</p>
+
+    <TABLE BGCOLOR="#C0E0FF" WIDTH="100%" BORDER="1" ALIGN="CENTER" CELLPADDING="5">
+      <TR>
+        <TD>
+          <PRE>&lt;match>
+  &lt;primary>
+    &lt;position>[input.xml:5.5]&lt;/position>
+    &lt;node>&lt;title>Blaue Blume&lt;/title>&lt;/node>
+  &lt;/primary>
+  &lt;secondary>
+    &lt;position>[input.xml:4.5]&lt;/position>
+    &lt;node>&lt;price>10&lt;/price>&lt;/node>
+  &lt;/secondary>
+  &lt;secondary>
+    &lt;position>[input.xml:3.5]&lt;/position>
+    &lt;node>&lt;author>Mihai Eminescu&lt;/author>&lt;/node>
+  &lt;/secondary>
+&lt;/match></PRE>
+        </TD>
+      </TR>
+    </TABLE>
+
+
+
+    <p>The binary query <samp>(%a/)+b</samp> locates the nodes
+    <samp>b</samp> whose ancestors are only <samp>a</samp> nodes,
+    together with these ancestors. For the input file
+    <samp>test1.xml</samp>:</p>
+
+    <TABLE BGCOLOR="#C0E0FF" WIDTH="100%" BORDER="1" ALIGN="CENTER" CELLPADDING="5">
+      <TR>
+        <TD>
+          <PRE>&lt;a>
+  &lt;a>
+    &lt;b/>
+  &lt;/a>
+&lt;/a></PRE>
+        </TD>
+      </TR>
+    </TABLE>
+
+    <p>fxgrep reports:</p>
+
+    <TABLE BGCOLOR="#C0E0FF" WIDTH="100%" BORDER="1" ALIGN="CENTER" CELLPADDING="5">
+      <TR>
+        <TD>
+          <PRE>&lt;match>
+  &lt;primary>
+    &lt;position>[test1.xml:3.5]&lt;/position>
+    &lt;node>&lt;b>&lt;/b>&lt;/node>
+  &lt;/primary>
+  &lt;secondary>
+    &lt;position>[test1.xml:1.1]&lt;/position>
+    &lt;node>&lt;a>
+  &lt;a>
+    &lt;b>&lt;/b>
+  &lt;/a>
+&lt;/a>&lt;/node>
+  &lt;/secondary>
+  &lt;secondary>
+    &lt;position>[test1.xml:2.3]&lt;/position>
+    &lt;node>&lt;a>
+    &lt;b>&lt;/b>
+  &lt;/a>&lt;/node>
+  &lt;/secondary>
+&lt;/match>
+</PRE>
+        </TD>
+      </TR>
+    </TABLE>
+
+</p>
+
+    <p>Any node pattern can be specified as a secondary match by
+    simply preceding it by the percent symbol. Otherwise, the syntax
+    of binary patterns is exactly as in the case of unary patterns,
+    except the production for <i>NodePattern</i> which is replaced
+    by:</p>
+
+    <TABLE BGCOLOR="#FFFFD0" WIDTH="100%" BORDER="1" ALIGN="CENTER" CELLPADDING="5">
+      <TR>
+        <TD>
+          <TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0">
+            <TR>
+              <TD HEIGHT="5">
+              </TD>
+            </TR>
+            <TR>
+              <TD ALIGN="RIGHT">
+                <I>NodePattern</I>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">::=</FONT></B>
+              </TD>
+              <TD>
+                <I>UnaryNodePattern</I>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>%UnaryNodePattern</I>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>%(UnaryNodePattern)</I>
+              </TD>
+            </TR>
+            <TR>
+              <TD HEIGHT="5">
+              </TD>
+            </TR>
+            <TR>
+              <TD ALIGN="RIGHT">
+                <I>UnaryNodePattern</I>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">::=</FONT></B>
+              </TD>
+              <TD>
+                <SAMP>"</SAMP><I>TextPattern</I><SAMP>"</SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <SAMP>'</SAMP><I>TextPattern</I><SAMP>'</SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <SAMP>&lt;</SAMP><SAMP>?</SAMP><I>TextPattern</I><SAMP>?>
+                  </SAMP><I>Qualifier</I><B><FONT COLOR="#00C000">*</FONT></B>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <SAMP>. </SAMP><I>AttributeQualifier</I><B><FONT COLOR="#00C000">*</FONT></B><SAMP>
+                  </SAMP><I>Qualifier</I><B><FONT COLOR="#00C000">*</FONT></B>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>NodeTest</I><SAMP> </SAMP><I>AttributeQualifier</I><B><FONT COLOR="#00C000">*</FONT></B><SAMP>
+                  </SAMP><I>Qualifier</I><B><FONT COLOR="#00C000">*</FONT></B>
+              </TD>
+            </TR>
+            <TR>
+              <TD HEIGHT="5">
+              </TD>
+            </TR>
+          </TABLE>
+        </TD>
+      </TR>
+    </TABLE>
+
+    <P>
+      <IMG SRC="Images/shadow-big.jpg" ALT="-----------------" WIDTH="100%">
+    </P>
+    <ADDRESS>
+      <A HREF="http://www.informatik.uni-trier.de/~aberlea/">A. Berlea</A>
+      (<A HREF="mailto:aberlea@psi.uni-trier.de">aberlea@psi.uni-trier.de</A>)
+    </ADDRESS>
+  </BODY>
+</HTML>

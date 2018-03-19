@@ -1,0 +1,62 @@
+fxgrep - The Functional XML Querying Tool
+Version 4.1, June 05, 2003
+
+by Andreas Neumann and Alexandru Berlea, University of Trier
+   neumann@psi.uni-trier.de, aberlea@psi.uni-trier.de
+
+What is fxgrep?
+---------------
+fxgrep is a powerful XML querying tool. It is written in the functional 
+programming language SML, based on the XML parser fxp. Given a query, 
+it parses an XML document and finds all matches of the query within that 
+document. The query can be specified either as a pattern or a grammar; 
+while the pattern syntax is more succinct and intuitive, the grammar 
+syntax is more expressive. 
+
+Installation
+------------
+In order to install fxgrep, you need an SML compiler. The current version
+of fxgrep has been tested with version 110.0.6 of SML of New Jersey, but 
+it might also run with other versions. The compiler must have the compilation 
+manager (CM) built in, which is the default when installing SML-NJ. We 
+successfully compiled fxgrep on Linux with glibc2.1, Digital Unix 4.0 and 
+Solaris 2.7. For other unices we expect no problems; compiling with the 
+Windows version of SML-NJ has not been tried. 
+
+These are the steps for installing fxgrep under Unix: 
+
+    1. Download and install the latest version of fxp
+       (http://www.informatik.uni-trier.de/~neumann/Fxp/); 
+    2. Download the latest version of fxgrep;
+    3. Unpack the sources, and change to the fxgrep directory, e.g.: 
+
+         gunzip -c fxgrep-4.1.tar.gz | tar xf -
+         cd fxgrep-4.1
+
+    4. Read the COPYRIGHT; 
+    5. Edit the Makefile according to your needs. Probably you will only have 
+       to change the following: 
+
+         FXP_LIBDIR    is where the fxp library was installed. This should
+                       be set to the same path as for the installation of
+                       fxp; it must contain the file fxlib.cm. Make sure
+                       that fxp was compiled with the same version of SML-NJ.   
+         FXGREP_BINDIR is where the executable will be installed; 
+         FXGREP_LIBDIR is where the heap image of by fxgrep will be installed; 
+         SML_BINDIR    is the directory where the SML executables are found. 
+                       It must contain the .arch-n-opsys script from the 
+                       SML-NJ distribution, so make sure that this is where 
+                       SML-NJ is physically installed; 
+         SML_EXEC      is the name of the SML executable. This is the program 
+                       that is called for generating the heap image and at 
+                       execution of fxgrep. If sml will be in your PATH at 
+                       installation time, you don't need the full path here. 
+
+    6. Compile fxgrep by typing make; 
+    7. Install fxgrep by typing make install. 
+
+If you experience problems installing fxgrep, send me a mail.
+Check out for new versions at 
+        http://www.informatik.uni-trier.de/~aberlea/Fxgrep.
+
+Alexandru Berlea.

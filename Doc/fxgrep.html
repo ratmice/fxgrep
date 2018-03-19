@@ -1,0 +1,738 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"
+                      "http://www.w3.org/TR/REC-html40/loose.dtd">
+<HTML>
+  <HEAD>
+    <TITLE>
+      fxgrep -  The Functional XML Querying Tool 
+    </TITLE>
+  </HEAD>
+  <BODY BGCOLOR="WHITE">
+    <H1>
+      <A HREF="http://www.informatik.uni-trier.de/~aberlea/Fxgrep/"><IMG SRC="Images/fxgrep.jpeg" ALT="fxgrep - " ALIGN="MIDDLE" BORDER="0"></A>
+      The Functional XML Querying Tool 
+    </H1>
+    <P>
+      <IMG SRC="Images/shadow-big.jpg" ALT="-----------------" WIDTH="100%">
+    </P>
+    <H2>
+      Contents
+    </H2>
+    <TABLE CELLPADDING="0" CELLSPACING="0">
+      <TR>
+        <TD>
+          <IMG SRC="Images/darkblue-ball-shadow.gif" ALT="0" HSPACE="5">
+        </TD>
+        <TD>
+          <A HREF="#DESC">What is <I>fxgrep</I>? </A>
+        </TD>
+      </TR>
+      <TR>
+        <TD>
+          <IMG SRC="Images/darkblue-ball-shadow.gif" ALT="0" HSPACE="5">
+        </TD>
+        <TD>
+          <A HREF="proc.html#MODEL"> The Processing Model of <I>fxgrep</I>
+            </A>
+        </TD>
+      </TR>
+      <TR>
+        <TD>
+          <IMG SRC="Images/darkblue-ball-shadow.gif" ALT="0" HSPACE="5">
+        </TD>
+        <TD>
+          <A HREF="pattern.html#PAT"> The Pattern Language of <I>fxgrep</I>
+            </A>
+        </TD>
+      </TR>
+      <TR>
+        <TD>
+          <IMG SRC="Images/darkblue-ball-shadow.gif" ALT="0" HSPACE="5">
+        </TD>
+        <TD>
+          <A HREF="grammar.html#GRAM"> The Grammar Formalism of <I>fxgrep</I>
+            </A>
+        </TD>
+      </TR>
+      <TR>
+        <TD>
+          <IMG SRC="Images/darkblue-ball-shadow.gif" ALT="0" HSPACE="5">
+        </TD>
+        <TD>
+          <A HREF="textpat.html#TEXT"> Text Patterns </A>
+        </TD>
+      </TR>
+      <TR>
+        <TD>
+          <IMG SRC="Images/darkblue-ball-shadow.gif" ALT="0" HSPACE="5">
+        </TD>
+        <TD>
+          <A HREF="#OPT"> <I>fxgrep</I> Options </A>
+        </TD>
+      </TR>
+    </TABLE>
+    <P>
+      <IMG SRC="Images/shadow-big.jpg" ALT="-----------------" WIDTH="100%">
+    </P>
+    <H2>
+      <A NAME="DESC"></A>What is <I>fxgrep</I>? 
+    </H2>
+    <P>
+       <I>fxgrep</I> is a powerful XML querying tool. It is written in the
+      functional programming language SML, based on the XML parser <A HREF="http://www.informatik.uni-trier.de/~aberlea/Fxp/"><I>fxp</I></A>.
+      
+    </P>
+    <P>
+       Given a <EM>query</EM>, it parses an XML document and finds all matches
+      of the query within that document. The query can be specified either
+      as a <A HREF="pattern.html#PAT"><EM>pattern</EM></A> or a <A HREF="grammar.html#GRAM"><EM>grammar</EM></A>;
+      while the pattern syntax is more succinct and intuitive, the grammar
+      syntax is more expressive. 
+    </P>
+
+    <p><i>fxgrep</i> can evaluate both <i>unary</i> and <i>binary</i>
+    queries. Unary queries locate individual nodes in the input
+    document. Binary queries locate pairs of nodes which are in some
+    specified relationship.</p>
+
+
+    <P>
+      <IMG SRC="Images/shadow-big.jpg" ALT="-----------------" WIDTH="100%">
+    </P>
+    <H2>
+      <A NAME="OPT"></A> <I>fxgrep</I> Options
+    </H2>
+    <TABLE CELLPADDING="0" CELLSPACING="0">
+      <TR>
+        <TD>
+          <IMG SRC="Images/darkblue-ball-shadow.gif" ALT="0" HSPACE="5">
+        </TD>
+        <TD>
+          <A HREF="#OPT-INV"> Invocation </A>
+        </TD>
+      </TR>
+      <TR>
+        <TD>
+          <IMG SRC="Images/darkblue-ball-shadow.gif" ALT="0" HSPACE="5">
+        </TD>
+        <TD>
+          <A HREF="#OPT-EXA"> Options by Example </A>
+        </TD>
+      </TR>
+      <TR>
+        <TD>
+          <IMG SRC="Images/darkblue-ball-shadow.gif" ALT="0" HSPACE="5">
+        </TD>
+        <TD>
+          <A HREF="#OPT-SUM"> Summary of Command Line Options </A>
+        </TD>
+      </TR>
+    </TABLE>
+    <P>
+      <IMG SRC="Images/shadow-med.jpg" ALT="-----------------" WIDTH="100%">
+    </P>
+    <H3>
+      <A NAME="OPT-INV"></A> Invocation 
+    </H3>
+    <P>
+       The typical invocation of <I>fxgrep</I> is 
+    </P>
+    <blockquote>
+       <FONT><SAMP>fxgrep [ </SAMP><I>option</I><SAMP> ... ] [ </SAMP><I>file</I><SAMP>
+          ]</SAMP></FONT> 
+    </blockquote>
+    <P>
+       If <I>file</I> is given, <I>fxgrep</I> reads its input document from
+      that file, otherwise from standard input. 
+    </P>
+    <P>
+      <IMG SRC="Images/shadow-med.jpg" ALT="-----------------" WIDTH="100%">
+    </P>
+    <H3>
+      <A NAME="OPT-EXA"></A> Options by Example 
+    </H3>
+    <TABLE CELLPADDING="0" CELLSPACING="0">
+      <TR>
+        <TD>
+          <IMG SRC="Images/darkblue-ball-shadow.gif" ALT="0" HSPACE="5">
+        </TD>
+        <TD>
+          <A HREF="#OPT-PATSPEC"> Specification of the Query </A>
+        </TD>
+      </TR>
+      <TR>
+        <TD>
+          <IMG SRC="Images/darkblue-ball-shadow.gif" ALT="0" HSPACE="5">
+        </TD>
+        <TD>
+          <A HREF="#OPT-OUTPUT"> Controlling the Output </A>
+        </TD>
+      </TR>
+      <TR>
+        <TD>
+          <IMG SRC="Images/darkblue-ball-shadow.gif" ALT="0" HSPACE="5">
+        </TD>
+        <TD>
+          <A HREF="#OPT-SELECT"> Restricting the Matching Algorithm </A>
+        </TD>
+      </TR>
+      <TR>
+        <TD>
+          <IMG SRC="Images/darkblue-ball-shadow.gif" ALT="0" HSPACE="5">
+        </TD>
+        <TD>
+          <A HREF="#OPT-MATCH"> Controlling the Number of Passes </A>
+        </TD>
+      </TR>
+    </TABLE>
+    <P>
+      <IMG SRC="Images/shadow-small.jpg" ALT="-----------------" WIDTH="100%">
+    </P>
+    <H4>
+      <A NAME="OPT-PATSPEC"></A> Specification of the Query 
+    </H4>
+    <P>
+       The query can be specified either as a pattern using the <FONT><SAMP>-p</SAMP></FONT>
+      or <FONT><SAMP>--pattern</SAMP></FONT> option or as a grammar with the
+      <FONT><SAMP>-g</SAMP></FONT> or <FONT><SAMP>--grammar</SAMP></FONT>
+      option. Since patterns are usually short, they may also be given on
+      the command line using option <FONT><SAMP>-P</SAMP></FONT>. In this
+      case, however, they can only contain ASCII characters. 
+    </P>
+    <P>
+       The pattern language of <I>fxgrep</I> is described <A href="pattern.html#PAT">here</A>.
+    </P>
+    <P>
+      The grammar formalism is described <A href="grammar.html#GRAM">here</A>.
+    </P>
+    <P>
+      <IMG SRC="Images/shadow-small.jpg" ALT="-----------------" WIDTH="100%">
+    </P>
+    <H4>
+      <A NAME="OPT-OUTPUT"></A> Controlling the Output 
+    </H4>
+    <P>
+       <I>fxgrep</I> reports the nodes matching a unary query in document order.
+      By default, for each of these nodes a processing instruction with target
+      <FONT><SAMP>fxgrep-match</SAMP></FONT> is printed, followed by the subtree
+      rooted at that node. For instance, suppose that the file <FONT><SAMP>test.xml</SAMP></FONT>
+      contains the following XML document: 
+    </P>
+    <TABLE BGCOLOR="#C0E0FF" WIDTH="100%" BORDER="1" ALIGN="CENTER" CELLPADDING="5">
+      <TR>
+        <TD>
+          <PRE>&lt;a>
+  &lt;b>hello&lt;b>world&lt;/b>&lt;/b>
+  &lt;a>&lt;b>!!!&lt;/b>&lt;/a>
+&lt;/a></PRE>
+        </TD>
+      </TR>
+    </TABLE>
+    <P>
+       Invoking <I>fxgrep</I> with the command 
+    </P>
+    <blockquote>
+      <PRE>fxgrep -P /a//b test.xml</PRE>
+    </blockquote>
+    <P>
+       produces the following output: 
+    </P>
+    <TABLE BGCOLOR="#C0E0FF" WIDTH="100%" BORDER="1" ALIGN="CENTER" CELLPADDING="5">
+      <TR>
+        <TD>
+          <PRE>&lt;?fxgrep-match [Test/d0.xml:2.3]--------------------------------------?>
+&lt;b>hello&lt;b>world&lt;/b>&lt;/b>
+          
+&lt;?fxgrep-match [Test/d0.xml:2.11]-------------------------------------?>
+&lt;b>world&lt;/b>
+
+&lt;?fxgrep-match [Test/d0.xml:3.6]--------------------------------------?>
+&lt;b>!!!&lt;/b></PRE>
+        </TD>
+      </TR>
+    </TABLE>
+
+    <P>
+       Output of the position can be disabled with the
+       <FONT><SAMP>-np</SAMP></FONT> or
+       <FONT><SAMP>--no-position</SAMP></FONT> option. Thus, invoking
+    </P>
+    <blockquote>
+      <PRE>fxgrep -P /a//b --no-position test.xml</PRE>
+    </blockquote>
+    <P>
+       produces the following output: 
+    </P>
+    <TABLE BGCOLOR="#C0E0FF" WIDTH="100%" BORDER="1" ALIGN="CENTER" CELLPADDING="5">
+      <TR>
+        <TD>
+          <PRE>&lt;b>hello&lt;b>world&lt;/b>&lt;/b>
+          
+&lt;b>world&lt;/b>
+
+&lt;b>!!!&lt;/b></PRE>
+        </TD>
+      </TR>
+    </TABLE>
+    <P>
+       Conversely, <I>fxgrep</I> omits printing of the subtree if the <FONT><SAMP>-nt</SAMP></FONT>
+      or <FONT><SAMP>--position-only</SAMP></FONT> option is given: 
+    </P>
+    <blockquote>
+      <PRE>fxgrep -P /a//b --position-only test.xml</PRE>
+    </blockquote>
+    <P>
+       reports the matches as follows: 
+    </P>
+    <TABLE BGCOLOR="#C0E0FF" WIDTH="100%" BORDER="1" ALIGN="CENTER" CELLPADDING="5">
+      <TR>
+        <TD>
+          <PRE>&lt;?fxgrep-match [Test/d0.xml:2.3]--------------------------------------?>
+&lt;?fxgrep-match [Test/d0.xml:2.11]-------------------------------------?>
+&lt;?fxgrep-match [Test/d0.xml:3.6]--------------------------------------?></PRE>
+        </TD>
+      </TR>
+    </TABLE>
+    <P>
+      The <FONT><SAMP>--no-output</SAMP></FONT> or <FONT><SAMP>-n</SAMP></FONT>
+      option makes <I>fxgrep</I> suppress the reporting of matches. This is
+      useful in scripts for determining whether a document contains a match
+      at all: In case is does <I>fxgrep</I>'s exit status is 0, otherwise
+      it is 1. Alternatively, the <FONT><SAMP>--count</SAMP></FONT> or <FONT><SAMP>-k</SAMP></FONT>
+      option makes <I>fxgrep</I> count the matches instead of reporting them
+      individually: 
+    </P>
+    <blockquote>
+      <PRE>fxgrep -P /a//b --count test.xml</PRE>
+    </blockquote>
+    <P>
+       yields the answer <FONT><SAMP>3</SAMP></FONT>. 
+    </P>
+
+    <P>The output of binary matches is described <a
+    href="pattern.html#PAT-BINARY">here</a>.</P>
+
+    <P>
+      <IMG SRC="Images/shadow-small.jpg" ALT="-----------------" WIDTH="100%">
+    </P>
+    <H4>
+      <A NAME="OPT-SELECT"></A> Restricting the Matching Algorithm 
+    </H4>
+    <P>
+       Sometimes it is desirable to find only matches that are not a descendant
+      of another matching node or do not contain another match. This can be
+      achieved with the options <FONT><SAMP>--outermost</SAMP></FONT>/<FONT><SAMP>-O</SAMP></FONT>
+      and <FONT><SAMP>--innermost</SAMP></FONT>/<FONT><SAMP>-I</SAMP></FONT>:
+      The former makes <I>fxgrep</I> report only <EM>outermost</EM> matches.
+      For instance, invoking 
+    </P>
+    <blockquote>
+      <PRE>fxgrep -P /a//b --outermost test.xml</PRE>
+    </blockquote>
+    <P>
+       yields: 
+    </P>
+    <TABLE BGCOLOR="#C0E0FF" WIDTH="100%" BORDER="1" ALIGN="CENTER" CELLPADDING="5">
+      <TR>
+        <TD>
+          <PRE>&lt;?fxgrep-match [Test/d0.xml:2.3]--------------------------------------?>
+&lt;b>hello&lt;b>world&lt;/b>&lt;/b>
+
+&lt;?fxgrep-match [Test/d0.xml:3.6]--------------------------------------?>
+&lt;b>!!!&lt;/b></PRE>
+        </TD>
+      </TR>
+    </TABLE>
+    <P>
+       On the other hand, <FONT><SAMP>--innermost</SAMP></FONT> selects only
+      <EM>innermost</EM> matches of the query. The output for <FONT><SAMP>test.xml</SAMP></FONT>
+      is then: 
+    </P>
+    <TABLE BGCOLOR="#C0E0FF" WIDTH="100%" BORDER="1" ALIGN="CENTER" CELLPADDING="5">
+      <TR>
+        <TD>
+          <PRE>&lt;?fxgrep-match [Test/d0.xml:2.11]-------------------------------------?>
+&lt;b>world&lt;/b>
+
+&lt;?fxgrep-match [Test/d0.xml:3.6]--------------------------------------?>
+&lt;b>!!!&lt;/b></PRE>
+        </TD>
+      </TR>
+
+    </TABLE>
+    <P>The <FONT><SAMP>--outermost</SAMP></FONT> and
+      <FONT><SAMP>--innermost</SAMP></FONT>  options are only sensible
+      when the matches are individual nodes in the input (i.e. for
+      unary queries, as opposed to binary queries).
+    </P>
+    <P>
+      <IMG SRC="Images/shadow-small.jpg" ALT="-----------------" WIDTH="100%">
+    </P>
+    <H4>
+      <A NAME="OPT-MATCH"></A> Controlling the Number of Passes 
+    </H4>
+    <P>
+       <I>fxgrep</I> performs the matching by one or two runs of a forest
+      automaton on the input document forest. The number of runs actually
+      needed is determined by analysis of the query prior to the matching:
+      If the query is 'simple' enough, a single pass suffices. In this case
+      it is even possible to perform the algorithm 'on the fly', i.e., without
+      having to construct an in-memory copy of the document forest. Though
+      this method needs only a (nearly) constant amount of memory even for
+      huge documents, it is slightly slower than performing the querying on
+      an in-memory copy of the document forest, because subtrees that fulfill
+      the contextual part of the query must be constructed on-demand, requiring
+      an extra administrative overhead. Therefore <I>fxgrep</I> does not perform
+      on-the-fly querying by default. 
+    </P>
+    <P>
+       <I>fxgrep</I> provides command-line options for controlling this behavior:
+      
+    </P>
+    <TABLE>
+      <TR>
+        <TD VALIGN="TOP">
+          <IMG SRC="Images/green-ball-shadow.gif">
+        </TD>
+        <TD VALIGN="TOP">
+          <P>
+             Option <FONT><SAMP>-2</SAMP></FONT> or <FONT><SAMP>--force-double</SAMP></FONT>
+            makes <I>fxgrep</I> use the two-pass algorithm disregarding the
+            result of the query analysis. This is mainly useful for testing
+            and debugging purposes. 
+          </P>
+        </TD>
+      </TR>
+      <TR>
+        <TD VALIGN="TOP">
+          <IMG SRC="Images/green-ball-shadow.gif">
+        </TD>
+        <TD VALIGN="TOP">
+          <P>
+             <FONT><SAMP>-1</SAMP></FONT> or <FONT><SAMP>--force-single</SAMP></FONT>
+            enforces the one-pass algorithm disregarding query analysis. Use
+            this option only if you deeply understand the querying algorithm
+            of <I>fxgrep</I>! Otherwise it might report invalid matches. 
+          </P>
+        </TD>
+      </TR>
+      <TR>
+        <TD VALIGN="TOP">
+          <IMG SRC="Images/green-ball-shadow.gif">
+        </TD>
+        <TD VALIGN="TOP">
+          <P>
+             The <FONT><SAMP>-h</SAMP></FONT> or <FONT><SAMP>--force-hooks</SAMP></FONT>
+            option enforces that single-pass matching is performed on the
+            fly. This option has no effect if the two-pass algorithm is employed.
+            Use this option for large documents in order to reduce memory
+            usage of <I>fxgrep</I>. 
+          </P>
+        </TD>
+      </TR>
+    </TABLE>
+    <P>
+      <IMG SRC="Images/shadow-med.jpg" ALT="-----------------" WIDTH="100%">
+    </P>
+    <H3>
+      <A NAME="OPT-SUM"></A> Summary of Command Line Options 
+    </H3>
+    <P>
+       Each option can be one of: 
+    </P>
+    <TABLE>
+      <TR>
+        <TD VALIGN="TOP">
+          <IMG SRC="Images/green-ball-shadow.gif">
+        </TD>
+        <TD VALIGN="TOP">
+          <P>
+             A file name specifying the input document. Only one input document
+            may be specified. 
+          </P>
+        </TD>
+      </TR>
+      <TR>
+        <TD VALIGN="TOP">
+          <IMG SRC="Images/green-ball-shadow.gif">
+        </TD>
+        <TD VALIGN="TOP">
+          <P>
+             A long option of the form <FONT><SAMP>--</SAMP><I>key</I></FONT>
+            or <FONT><SAMP>--</SAMP><I>key</I><SAMP>=</SAMP><I>arg</I></FONT>
+            
+          </P>
+        </TD>
+      </TR>
+      <TR>
+        <TD VALIGN="TOP">
+          <IMG SRC="Images/green-ball-shadow.gif">
+        </TD>
+        <TD VALIGN="TOP">
+          <P>
+             A short option of the form <FONT><SAMP>-</SAMP><I>k</I></FONT>,
+            where <I>k</I> consists of a single character. If <I>k</I> consists
+            of more than one character, each character is assumed to be a
+            short option itself (e.g., <FONT><SAMP>-vic</SAMP></FONT> equals
+            <FONT><SAMP>-v -i -c</SAMP></FONT>). The only exception is when
+            the first character is an <FONT><SAMP>n</SAMP></FONT> (see below).
+            
+          </P>
+        </TD>
+      </TR>
+      <TR>
+        <TD VALIGN="TOP">
+          <IMG SRC="Images/green-ball-shadow.gif">
+        </TD>
+        <TD VALIGN="TOP">
+          <P>
+             A short option with argument of the form <FONT><SAMP>-</SAMP><I>k</I><SAMP>
+                </SAMP><I>arg</I></FONT>, where <I>k</I> consists of a single
+            character. 
+          </P>
+        </TD>
+      </TR>
+      <TR>
+        <TD VALIGN="TOP">
+          <IMG SRC="Images/green-ball-shadow.gif">
+        </TD>
+        <TD VALIGN="TOP">
+          <P>
+             A negative short option of the form <FONT><SAMP>-n</SAMP><I>k</I></FONT>,
+            where <I>k</I> consists of a single character. If <I>k</I> consists
+            of more than one character, each character is assumed to be a
+            negative short option itself (e.g., <FONT><SAMP>-nvic</SAMP></FONT>
+            equals <FONT><SAMP>-nv -ni -nc</SAMP></FONT>). If <I>k</I> is
+            empty, then this is the (non-negative) short option <FONT><SAMP>-n</SAMP></FONT>.
+            
+          </P>
+        </TD>
+      </TR>
+      <TR>
+        <TD VALIGN="TOP">
+          <IMG SRC="Images/green-ball-shadow.gif">
+        </TD>
+        <TD VALIGN="TOP">
+          <P>
+             The string <FONT><SAMP>--</SAMP></FONT>. This option is ignored,
+            except that all remaining options are interpreted as file names,
+            whether they start with <FONT><SAMP>-</SAMP></FONT> or not. 
+          </P>
+        </TD>
+      </TR>
+    </TABLE>
+    <P>
+       <I>fxgrep</I> understands all <A HREF="http://www.informatik.uni-trier.de/~aberlea/Fxp/fxp.html#OPT">options</A>
+      documented for <A HREF="http://www.informatik.uni-trier.de/~aberlea/Fxp/fxp.html"><I>fxp</I></A>.
+      Additionally, the following options are available: 
+    </P>
+    <dl>
+      <dt>
+        <SAMP>-P </SAMP><I>pat</I>
+      </dt>
+      <dd>
+         Use the pattern <I>pat</I>. This option may not be used in conjunction
+        with the <FONT><SAMP>-p</SAMP></FONT> or <FONT><SAMP>-g</SAMP></FONT>
+        option. 
+      </dd>
+      <dt>
+        <SAMP>-p </SAMP><I>file</I>
+      </dt>
+      <dt>
+        <SAMP>--pattern=</SAMP><I>file</I>
+      </dt>
+      <dd>
+         Read the pattern from the file named <I>file</I>. This option may
+        not be used in conjunction with the <FONT><SAMP>-P</SAMP></FONT> or
+        <FONT><SAMP>-g</SAMP></FONT> option. 
+      </dd>
+      <dt>
+        <SAMP>-g </SAMP><I>file</I>
+      </dt>
+      <dt>
+        <SAMP>--grammar=</SAMP><I>file</I>
+      </dt>
+      <dd>
+         Read the grammar from the file named <I>file</I>. This option may
+        not be used in conjunction with the <FONT><SAMP>-P</SAMP></FONT> or
+        <FONT><SAMP>-p</SAMP></FONT> option. 
+      </dd>
+      <dt>
+        <SAMP>--grammar-validate[=(yes|no)]</SAMP>
+      </dt>
+      <dd>
+         Turn on or off validation of the grammar as an XML document. Default
+        is <FONT><SAMP>no</SAMP></FONT>. 
+      </dd>
+      <dt>
+        <SAMP>--grammar-include[=(yes|no)]</SAMP>
+      </dt>
+      <dd>
+         Turn on or off inclusion of external parsed entities when parsing
+        a grammar in non-validating mode. Default is <FONT><SAMP>yes</SAMP></FONT>.
+        
+      </dd>
+      <dt>
+        <SAMP>--warn-undef-vars[=(yes|no)]</SAMP>
+      </dt>
+      <dd>
+         Warn about undefined variables used in the grammar. Default is <FONT><SAMP>no</SAMP></FONT>.
+        
+      </dd>
+      <dt>
+        <SAMP>--ignore-xml-errors[=(yes|no)]</SAMP>
+      </dt>
+      <dd>
+         Continue even if the grammar is not a well-formed/valid XML document.
+        Default is <FONT><SAMP>yes</SAMP></FONT>. 
+      </dd>
+      <dt>
+        <SAMP>--ignore-syntax-errors=[(yes|no)]</SAMP>
+      </dt>
+      <dd>
+         Try to continue even if the grammar or pattern has syntax errors.
+        De fault is <FONT><SAMP>no</SAMP></FONT>. 
+      </dd>
+      <dt>
+        <SAMP>-n</SAMP>
+      </dt>
+      <dt>
+        <SAMP>--no-output</SAMP>
+      </dt>
+      <dd>
+         Do not generate any output, except for errors and warnings. 
+      </dd>
+      <dt>
+        <SAMP>-o </SAMP><I>fname</I>
+      </dt>
+      <dt>
+        <SAMP>--output=</SAMP><I>fname</I>
+      </dt>
+      <dd>
+         Write all output, except for errors and warnings, to the file named
+        <I>fname</I>. If <I>fname</I> is <FONT><SAMP>-</SAMP></FONT>, use
+        the standard output. Defaults to <FONT><SAMP>-</SAMP></FONT>. 
+      </dd>
+      <dt>
+        <SAMP>--output-encoding=</SAMP><I>enc</I>
+      </dt>
+      <dd>
+         Use encoding <I>enc</I> for generating the output. If no output encoding
+        is given, the encoding of the input document is used. 
+      </dd>
+      <dt>
+        <SAMP>--output-textdecl[=(yes|no)]</SAMP>
+      </dt>
+      <dd>
+         Controls whether to start the output with a text declaration. Default
+        is <FONT><SAMP>yes</SAMP></FONT>. 
+      </dd>
+      <dd>
+        <P>
+        </P>
+      </dd>
+      <dt>
+        <SAMP>-k</SAMP>
+      </dt>
+      <dt>
+        <SAMP>--count</SAMP>
+      </dt>
+      <dd>
+         Only count matches but don't generate output. Implies <FONT><SAMP>--no-output</SAMP></FONT>.
+        
+      </dd>
+      <dt>
+        <SAMP>-np</SAMP>
+      </dt>
+      <dt>
+        <SAMP>--no-position</SAMP>
+      </dt>
+      <dd>
+         Do not output a processing instruction giving the position of each
+        match. Default is to do this. 
+      </dd>
+      <dt>
+        <SAMP>-nt</SAMP>
+      </dt>
+      <dt>
+        <SAMP>--position-only</SAMP>
+      </dt>
+      <dd>
+         Output only the processing instruction with the position. Default
+        is to print also the matching subdocument. 
+      </dd>
+      <dd>
+        <P>
+        </P>
+      </dd>
+      <dt>
+        <SAMP>-O</SAMP>
+      </dt>
+      <dt>
+        <SAMP>--outermost</SAMP>
+      </dt>
+      <dd>
+         Report only matches of the pattern that are not descendants of another
+        matching subtree. Default is to report all matches. 
+      </dd>
+      <dt>
+        <SAMP>-I</SAMP>
+      </dt>
+      <dt>
+        <SAMP>--innermost</SAMP>
+      </dt>
+      <dd>
+         Report only matches of the pattern that do not contain other matching
+        subtrees. Default is to report all matches. 
+      </dd>
+      <dt>
+        <SAMP>-A</SAMP>
+      </dt>
+      <dt>
+        <SAMP>--all</SAMP>
+      </dt>
+      <dd>
+         Report all matches of the pattern. This is the default. 
+      </dd>
+      <dd>
+        <P>
+        </P>
+      </dd>
+      <dt>
+        <SAMP>-h</SAMP>
+      </dt>
+      <dt>
+        <SAMP>--force-hooks</SAMP>
+      </dt>
+      <dd>
+         Force matching in hooks, that is during parsing, in case of a single
+        pass. 
+      </dd>
+      <dt>
+        <SAMP>-1</SAMP>
+      </dt>
+      <dt>
+        <SAMP>--force-single</SAMP>
+      </dt>
+      <dd>
+         Force matching in a single left-to-right pass disregarding grammar
+        analysis. 
+      </dd>
+      <dt>
+        <SAMP>-2</SAMP>
+      </dt>
+      <dt>
+        <SAMP>--force-double</SAMP>
+      </dt>
+      <dd>
+         Force matching in two passes disregarding grammar analysis. 
+      </dd>
+    </dl>
+    <P>
+      <IMG SRC="Images/shadow-big.jpg" ALT="-----------------" WIDTH="100%">
+    </P>
+    <ADDRESS>
+      <A HREF="http://www.informatik.uni-trier.de/~aberlea/">A. Berlea</A>
+      (<A HREF="mailto:aberlea@psi.uni-trier.de">aberlea@psi.uni-trier.de</A>)
+    </ADDRESS>
+  </BODY>
+</HTML>

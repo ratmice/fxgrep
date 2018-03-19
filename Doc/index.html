@@ -1,0 +1,291 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"
+                      "http://www.w3.org/TR/REC-html40/loose.dtd">
+<HTML>
+  <HEAD>
+    <TITLE>
+      fxgrep -  The Functional XML Querying Tool 
+    </TITLE>
+  </HEAD>
+  <BODY BGCOLOR="WHITE">
+    <H1>
+      <A HREF="http://www.informatik.uni-trier.de/~aberlea/Fxgrep/"><IMG SRC="Images/fxgrep.jpeg" ALT="fxgrep - " ALIGN="MIDDLE" BORDER="0"></A>
+      The Functional XML Querying Tool 
+    </H1>
+    <P>
+      <IMG SRC="Images/shadow-big.jpg" ALT="-----------------" WIDTH="100%">
+    </P>
+    <H2>
+      Contents
+    </H2>
+    <TABLE CELLPADDING="0" CELLSPACING="0">
+      <TR>
+        <TD>
+          <IMG SRC="Images/darkblue-ball-shadow.gif" ALT="0" HSPACE="5">
+        </TD>
+        <TD>
+          <A HREF="#WHAT">What is <I>fxgrep</I>? </A>
+        </TD>
+      </TR>
+      <TR>
+        <TD>
+          <IMG SRC="Images/darkblue-ball-shadow.gif" ALT="0" HSPACE="5">
+        </TD>
+        <TD>
+          <A HREF="#VERSION"> <I>fxgrep</I> Versions and Changes </A>
+        </TD>
+      </TR>
+      <TR>
+        <TD>
+          <IMG SRC="Images/darkblue-ball-shadow.gif" ALT="0" HSPACE="5">
+        </TD>
+        <TD>
+          <A HREF="#DOWNLOAD"> Downloading <I>fxgrep</I> </A>
+        </TD>
+      </TR>
+      <TR>
+        <TD>
+          <IMG SRC="Images/darkblue-ball-shadow.gif" ALT="0" HSPACE="5">
+        </TD>
+        <TD>
+          <A HREF="#INSTALL"> Installation Guide </A>
+        </TD>
+      </TR>
+      <TR>
+        <TD>
+          <IMG SRC="Images/darkblue-ball-shadow.gif" ALT="0" HSPACE="5">
+        </TD>
+        <TD>
+          <A HREF="fxgrep.html"> <I>fxgrep</I> User Guide </A>
+        </TD>
+      </TR>
+    </TABLE>
+    <P>
+      <IMG SRC="Images/shadow-big.jpg" ALT="-----------------" WIDTH="100%">
+    </P>
+    <H2>
+      <A NAME="WHAT"></A>What is <I>fxgrep</I>? 
+    </H2>
+    <P>
+       <I>fxgrep</I> is a powerful XML querying tool. It is written in the
+      functional programming language SML, based on the XML parser <A HREF="http://www.informatik.uni-trier.de/~aberlea/Fxp/"><I>fxp</I></A>.
+      
+    </P>
+    <P>
+       Given a <EM>query</EM>, it parses an XML document and finds all matches
+      of the query within that document. The query can be specified either
+      as a <A HREF="pattern.html#PAT"><EM>pattern</EM></A> or a <A HREF="grammar.html#GRAM"><EM>grammar</EM></A>;
+      while the pattern syntax is more succinct and intuitive, the grammar
+      syntax is more expressive. 
+    </P>
+    <P>
+      <IMG SRC="Images/shadow-big.jpg" ALT="-----------------" WIDTH="100%">
+    </P>
+    <H2>
+      <A NAME="VERSION"></A> <I>fxgrep</I> Versions and Changes 
+    </H2>
+    <p>
+      <b>New:</b> fxgrep allows now <a href="pattern.html#PAT-BINARY">binary queries</a>.
+    </p>
+    <P>
+       The current version of <I>fxgrep</I> is 4.1. Changes from the
+      previous versions are described <a href="CHANGES">here</a>.
+    </P>
+    <P>
+      <IMG SRC="Images/shadow-big.jpg" ALT="-----------------" WIDTH="100%">
+    </P>
+    <H2>
+      <A NAME="DOWNLOAD"></A> Downloading <I>fxgrep</I> 
+    </H2>
+    <P>
+       The source code for <I>fxgrep</I> can be downloaded by <A
+       HREF="http://www.informatik.uni-trier.de/~aberlea/Fxgrep/fxgrep.tar.gz">http</A>.
+       The Copyright note is <A HREF="COPYRIGHT">here</A>.
+    </P>
+    <P>
+      <IMG SRC="Images/shadow-big.jpg" ALT="-----------------" WIDTH="100%">
+    </P>
+    <H2>
+      <A NAME="INSTALL"></A> Installation Guide 
+    </H2>
+    <P>
+       In order to install <I>fxgrep</I>, you need an SML
+       compiler. The current version of <I>fxgrep</I> has been tested
+       with version 110.0.7 of SML of New Jersey, but it might also
+       run with other versions. The compiler must have the compilation
+       manager (CM) built in, which is the default when installing
+       SML/NJ. We successfully compiled <I>fxgrep</I> on Linux. For
+       other unices we expect no problems; compiling with the Windows
+       version of SML/NJ has not been tried.
+    </P>
+    <P>
+       These are the steps for installing <I>fxgrep</I> on Unix: 
+    </P>
+    <TABLE>
+      <TR>
+        <TD VALIGN="TOP">
+          &nbsp;1.
+        </TD>
+        <TD VALIGN="TOP">
+          <P>
+             Download and install the latest version of <A HREF="http://www.informatik.uni-trier.de/~aberlea/Fxp/"><I>fxp</I></A>.
+            It suffices to install the <I>fxp</I> library, but some of the
+            example programs might also be interesting for you. 
+          </P>
+        </TD>
+      </TR>
+      <TR>
+        <TD VALIGN="TOP">
+          &nbsp;2.
+        </TD>
+        <TD VALIGN="TOP">
+          <P>
+             <A HREF="#DOWNLOAD">Download</A> the latest version of <I>fxgrep</I>.
+            
+          </P>
+        </TD>
+      </TR>
+      <TR>
+        <TD VALIGN="TOP">
+          &nbsp;3.
+        </TD>
+        <TD VALIGN="TOP">
+          <P>
+             Unpack the sources, and change to the <I>fxgrep</I> directory,
+            e.g.: 
+          </P>
+          <blockquote>
+            <PRE>gunzip -c fxgrep-4.0.tar.gz | tar xf -
+cd fxgrep-4.0</PRE>
+          </blockquote>
+        </TD>
+      </TR>
+      <TR>
+        <TD VALIGN="TOP">
+          &nbsp;4.
+        </TD>
+        <TD VALIGN="TOP">
+          <P>
+             Read the file <FONT><SAMP>COPYRIGHT</SAMP></FONT>; 
+          </P>
+        </TD>
+      </TR>
+      <TR>
+        <TD VALIGN="TOP">
+          &nbsp;5.
+        </TD>
+        <TD VALIGN="TOP">
+          <P>
+             Edit the <FONT><SAMP>Makefile</SAMP></FONT> according to your
+            needs. Probably you will only have to change the following: 
+          </P>
+          <TABLE>
+            <TR>
+              <TD VALIGN="TOP">
+                <FONT><SAMP>FXP_LIBDIR</SAMP></FONT>
+              </TD>
+              <TD>
+                <P>
+                   is where the <I>fxp</I> library was installed. This should
+                  be set to the same path as for the installation of <I>fxp</I>.
+                  It must contain the file <FONT><SAMP>fxlib.cm</SAMP></FONT>.
+                  Make sure that <I>fxp</I> was compiled with the same version
+                  of SML/NJ. 
+                </P>
+              </TD>
+            </TR>
+            <TR>
+              <TD VALIGN="TOP">
+                <FONT><SAMP>FXGREP_BINDIR</SAMP></FONT>
+              </TD>
+              <TD>
+                <P>
+                   is where the executable will be installed; 
+                </P>
+              </TD>
+            </TR>
+            <TR>
+              <TD VALIGN="TOP">
+                <FONT><SAMP>FXGREP_LIBDIR</SAMP></FONT>
+              </TD>
+              <TD>
+                <P>
+                   is where the heap image of by <I>fxgrep</I> will be installed;
+                  
+                </P>
+              </TD>
+            </TR>
+            <TR>
+              <TD VALIGN="TOP">
+                <FONT><SAMP>SML_BINDIR</SAMP></FONT>
+              </TD>
+              <TD>
+                <P>
+                   is the directory where the SML/NJ executables are found.
+                  It must contain the <FONT><SAMP>.arch-n-opsys</SAMP></FONT>
+                  script from the SML/NJ distribution, so make sure that this
+                  is where SML/NJ is physically installed; 
+                </P>
+              </TD>
+            </TR>
+            <TR>
+              <TD VALIGN="TOP">
+                <FONT><SAMP>SML_EXEC</SAMP></FONT>
+              </TD>
+              <TD>
+                <P>
+                   is the name of the SML/NJ executable. This is the program
+                  that is called for generating the heap image and at execution
+                  of <I>fxgrep</I>. If sml is in your <FONT><SAMP>PATH</SAMP></FONT>
+                  at installation time, you don't need the full path here.
+                  
+                </P>
+              </TD>
+            </TR>
+          </TABLE>
+        </TD>
+      </TR>
+      <TR>
+        <TD VALIGN="TOP">
+          &nbsp;6.
+        </TD>
+        <TD VALIGN="TOP">
+          <P>
+             Compile <I>fxgrep</I> by typing <FONT><SAMP>make</SAMP></FONT>;
+            
+          </P>
+        </TD>
+      </TR>
+      <TR>
+        <TD VALIGN="TOP">
+          &nbsp;7.
+        </TD>
+        <TD VALIGN="TOP">
+          <P>
+             Install <I>fxgrep</I> by typing <FONT><SAMP>make install</SAMP></FONT>.
+            
+          </P>
+        </TD>
+      </TR>
+    </TABLE>
+    <P>
+       If you experience problems installing <I>fxgrep</I>, send me a mail.
+      
+    </P>
+
+    <P>
+      <IMG SRC="Images/shadow-big.jpg" ALT="-----------------" WIDTH="100%">
+    </P>
+
+    <h3>Credits</h3> Authors of fxgrep are <a
+    href="mailto:neumann@psi.uni-trier.de"/>Andreas Neumann</a>, <a
+    href="mailto:aberlea@psi.uni-trier.de"/>Alexandru Berlea</a>.
+
+    <P>
+      <IMG SRC="Images/shadow-big.jpg" ALT="-----------------" WIDTH="100%">
+    </P>
+    <ADDRESS>
+      <A HREF="http://www.informatik.uni-trier.de/~aberlea/">A. Berlea</A>
+      (<A HREF="mailto:aberlea@psi.uni-trier.de">aberlea@psi.uni-trier.de</A>)
+    </ADDRESS>
+  </BODY>
+</HTML>

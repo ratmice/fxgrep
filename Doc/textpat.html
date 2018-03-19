@@ -1,0 +1,568 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"
+                      "http://www.w3.org/TR/REC-html40/loose.dtd">
+<HTML>
+  <HEAD>
+    <TITLE>
+      fxgrep -  The Functional XML Querying Tool 
+    </TITLE>
+  </HEAD>
+  <BODY BGCOLOR="WHITE">
+    <H1>
+      <A HREF="http://www.informatik.uni-trier.de/~aberlea/Fxgrep/"><IMG SRC="Images/fxgrep.jpeg" ALT="fxgrep - " ALIGN="MIDDLE" BORDER="0"></A>
+      The Functional XML Querying Tool 
+    </H1>
+    <P>
+      <IMG SRC="Images/shadow-big.jpg" ALT="-----------------" WIDTH="100%">
+    </P>
+    <H2>
+      Contents
+    </H2>
+    <TABLE CELLPADDING="0" CELLSPACING="0">
+      <TR>
+        <TD>
+          <IMG SRC="Images/darkblue-ball-shadow.gif" ALT="0" HSPACE="5">
+        </TD>
+        <TD>
+          <A HREF="fxgrep.html#DESC"> What is <I>fxgrep</I>? </A>
+        </TD>
+      </TR>
+      <TR>
+        <TD>
+          <IMG SRC="Images/darkblue-ball-shadow.gif" ALT="0" HSPACE="5">
+        </TD>
+        <TD>
+          <A HREF="proc.html#MODEL"> The Processing Model of <I>fxgrep</I>
+            </A>
+        </TD>
+      </TR>
+      <TR>
+        <TD>
+          <IMG SRC="Images/darkblue-ball-shadow.gif" ALT="0" HSPACE="5">
+        </TD>
+        <TD>
+          <A HREF="pattern.html#PAT"> The Pattern Language of <I>fxgrep</I>
+            </A>
+        </TD>
+      </TR>
+      <TR>
+        <TD>
+          <IMG SRC="Images/darkblue-ball-shadow.gif" ALT="0" HSPACE="5">
+        </TD>
+        <TD>
+          <A HREF="grammar.html#GRAM"> The Grammar Formalism of <I>fxgrep</I>
+            </A>
+        </TD>
+      </TR>
+      <TR>
+        <TD>
+          <IMG SRC="Images/darkblue-ball-shadow.gif" ALT="0" HSPACE="5">
+        </TD>
+        <TD>
+          <A HREF="#TEXT"> Text Patterns </A>
+        </TD>
+      </TR>
+      <TR>
+        <TD>
+          <IMG SRC="Images/darkblue-ball-shadow.gif" ALT="0" HSPACE="5">
+        </TD>
+        <TD>
+          <A HREF="fxgrep.html#OPT"> <I>fxgrep</I> Options </A>
+        </TD>
+      </TR>
+    </TABLE>
+    <P>
+      <IMG SRC="Images/shadow-big.jpg" ALT="-----------------" WIDTH="100%">
+    </P>
+    <H2>
+      <A NAME="TEXT"></A> Text Patterns 
+    </H2>
+    <TABLE CELLPADDING="0" CELLSPACING="0">
+      <TR>
+        <TD>
+          <IMG SRC="Images/darkblue-ball-shadow.gif" ALT="0" HSPACE="5">
+        </TD>
+        <TD>
+          <A HREF="#CHARPAT"> Character Patterns </A>
+        </TD>
+      </TR>
+      <TR>
+        <TD>
+          <IMG SRC="Images/darkblue-ball-shadow.gif" ALT="0" HSPACE="5">
+        </TD>
+        <TD>
+          <A HREF="#TEXTPAT"> Regular Expressions </A>
+        </TD>
+      </TR>
+    </TABLE>
+    <P>
+       A <EM>text pattern</EM> is an extended regular expression over the
+      alphabet of Unicode characters and is used for matching text nodes.
+      A text pattern matches a text node if the text contains a string that
+      matches the regular expression. For instance, the text pattern <FONT><SAMP>[Aa]utomat(a|on)</SAMP></FONT>
+      matches each text node whose text contains one of the words <FONT><SAMP>automata</SAMP></FONT>
+      or <FONT><SAMP>automaton</SAMP></FONT>, possibly starting with a capital
+      letter. 
+    </P>
+    <P>
+      <IMG SRC="Images/shadow-med.jpg" ALT="-----------------" WIDTH="100%">
+    </P>
+    <H3>
+      <A NAME="CHARPAT"></A> Character Patterns 
+    </H3>
+    <P>
+       <EM>Character patterns</EM> are the basic components of a text pattern:
+      They are text patterns that match strings of length one, i.e., single
+      characters. The simplest form of a character pattern is a character
+      to be matched. In order to match a range of characters, the special
+      characters <FONT><SAMP>.</SAMP></FONT> and <FONT><SAMP>~</SAMP></FONT>
+      or bracket notation for specifying a list of <EM>character intervals</EM>
+      can be used. Moreover, a special character can be escaped using a backslash
+      <FONT><SAMP>\</SAMP></FONT>. 
+    </P>
+    <P>
+       For instance, the character pattern <FONT><SAMP>A</SAMP></FONT> matches
+      the string <FONT><SAMP>A</SAMP></FONT>. The character pattern <FONT><SAMP>[a-zA-Z0-9]</SAMP></FONT>
+      matches any character between <FONT><SAMP>a</SAMP></FONT> and <FONT><SAMP>z</SAMP></FONT>,
+      <FONT><SAMP>A</SAMP></FONT> and <FONT><SAMP>Z</SAMP></FONT> or <FONT><SAMP>0</SAMP></FONT>
+      and <FONT><SAMP>9</SAMP></FONT>, i.e., alphanumeric ASCII characters.
+      The character pattern <FONT><SAMP>\[</SAMP></FONT> matches the single
+      character <FONT><SAMP>[</SAMP></FONT>, and so does <FONT><SAMP>[[]</SAMP></FONT>.
+      
+    </P>
+    <TABLE BGCOLOR="#FFFFD0" WIDTH="100%" BORDER="1" ALIGN="CENTER" CELLPADDING="5">
+      <TR>
+        <TD>
+          <TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0">
+            <TR>
+              <TD HEIGHT="5">
+              </TD>
+            </TR>
+            <TR>
+              <TD ALIGN="RIGHT">
+                <I>CharPattern</I>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">::=</FONT></B>
+              </TD>
+              <TD>
+                <SAMP>.</SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <SAMP>~</SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>Character</I>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <SAMP>[</SAMP><I>CharInterval</I><B><FONT COLOR="#00C000">+</FONT></B><SAMP>]</SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <SAMP>[^</SAMP><I>CharInterval</I><B><FONT COLOR="#00C000">+</FONT></B><SAMP>]</SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD HEIGHT="5">
+              </TD>
+            </TR>
+            <TR>
+              <TD ALIGN="RIGHT">
+                <I>CharInterval</I>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">::=</FONT></B>
+              </TD>
+              <TD>
+                <I>Character</I>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>Character</I><SAMP>-</SAMP><I>Character</I>
+              </TD>
+            </TR>
+            <TR>
+              <TD HEIGHT="5">
+              </TD>
+            </TR>
+            <TR>
+              <TD ALIGN="RIGHT">
+                <I>Character</I>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">::=</FONT></B>
+              </TD>
+              <TD>
+                <I>UniChar</I>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <SAMP>\</SAMP><I>UniChar</I>
+              </TD>
+            </TR>
+            <TR>
+              <TD HEIGHT="5">
+              </TD>
+            </TR>
+            <TR>
+              <TD ALIGN="RIGHT">
+                <I>UniChar</I>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">::=</FONT></B>
+              </TD>
+              <TD>
+                <I>(a Unicode character)</I>
+              </TD>
+            </TR>
+          </TABLE>
+        </TD>
+      </TR>
+    </TABLE>
+    <P>
+       A character pattern of the form <FONT><SAMP>[...]</SAMP></FONT> matches
+      all characters that are in one of the listed character intervals. If
+      the character pattern has the form <FONT><SAMP>[^...]</SAMP></FONT>,
+      then it matches all characters that are not in any of the character
+      intervals. For instance, the character pattern <FONT><SAMP>[^0-9]</SAMP></FONT>
+      matches all characters except for digits. 
+    </P>
+    <P>
+       Note that since character <FONT><SAMP>^</SAMP></FONT> has a special
+      meaning if ii follows the opening bracket, this character should never
+      be the first character interval. Similarly, character <FONT><SAMP>-</SAMP></FONT>
+      is interpreted in a special way if between two characters. In order
+      two be interpreted as an ordinary character, it must immediately follow
+      the <FONT><SAMP>[</SAMP></FONT> or <FONT><SAMP>[^</SAMP></FONT>. You
+      can also use the backslash to escape the character: <FONT><SAMP>[\^]</SAMP></FONT>
+      matches the string <FONT><SAMP>^</SAMP></FONT>. 
+    </P>
+    <P>
+      <IMG SRC="Images/shadow-med.jpg" ALT="-----------------" WIDTH="100%">
+    </P>
+    <H3>
+      <A NAME="TEXTPAT"></A> Regular Expressions 
+    </H3>
+    <P>
+       Text patterns are made up from character patterns using regular expression
+      operators. Additionally, the two special symbols <FONT><SAMP>^</SAMP></FONT>
+      and <FONT><SAMP>$</SAMP></FONT> and the space character are allowed
+      and interpreted in a special way. The syntax is summarized by the following
+      grammar: 
+    </P>
+    <TABLE BGCOLOR="#FFFFD0" WIDTH="100%" BORDER="1" ALIGN="CENTER" CELLPADDING="5">
+      <TR>
+        <TD>
+          <TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0">
+            <TR>
+              <TD HEIGHT="5">
+              </TD>
+            </TR>
+            <TR>
+              <TD ALIGN="RIGHT">
+                <I>TextPattern</I>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">::=</FONT></B>
+              </TD>
+              <TD>
+                <IMG SRC="Images/epsilon.gif">
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <SAMP>^</SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <SAMP>$</SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>CharPattern</I>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>TextPattern</I><SAMP>?</SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>TextPattern</I><SAMP>*</SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>TextPattern</I><SAMP>+</SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>TextPattern</I><SAMP> </SAMP><I>TextPattern</I>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>TextPattern</I><SAMP>|</SAMP><I>TextPattern</I>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <SAMP>(</SAMP><I>TextPattern</I><SAMP>)</SAMP>
+              </TD>
+            </TR>
+          </TABLE>
+        </TD>
+      </TR>
+    </TABLE>
+    <P>
+       The meaning of a text pattern is as follows: 
+    </P>
+    <TABLE>
+      <TR>
+        <TD VALIGN="TOP">
+          <IMG SRC="Images/green-ball-shadow.gif">
+        </TD>
+        <TD VALIGN="TOP">
+          <P>
+             The empty text pattern (<IMG SRC="Images/epsilon.gif">) matches
+            the empty string. A character pattern matches all strings consisting
+            of a single character that matches the character pattern. 
+          </P>
+        </TD>
+      </TR>
+      <TR>
+        <TD VALIGN="TOP">
+          <IMG SRC="Images/green-ball-shadow.gif">
+        </TD>
+        <TD VALIGN="TOP">
+          <P>
+             The concatenation of two text patterns is the text pattern that
+            matches all strings which result from concatenating two strings
+            that match the individual text patterns. For instance, the text
+            pattern <FONT><SAMP>foo</SAMP></FONT>, which is the concatenation
+            of the three character patterns <FONT><SAMP>f</SAMP></FONT>, <FONT><SAMP>o</SAMP></FONT>
+            and <FONT><SAMP>o</SAMP></FONT>, matches the string <FONT><SAMP>foo</SAMP></FONT>,
+            and the text pattern <FONT><SAMP>[tT]ree</SAMP></FONT> matches
+            the strings <FONT><SAMP>tree</SAMP></FONT> and <FONT><SAMP>Tree</SAMP></FONT>.
+            
+          </P>
+        </TD>
+      </TR>
+      <TR>
+        <TD VALIGN="TOP">
+          <IMG SRC="Images/green-ball-shadow.gif">
+        </TD>
+        <TD VALIGN="TOP">
+          <P>
+             A text pattern composed with the <FONT><SAMP>|</SAMP></FONT>
+            operator indicates an alternative of two text patterns. It matches
+            any string matched by either of the two individual text patterns.
+            For instance, the text pattern <FONT><SAMP>automat(a|on)</SAMP></FONT>
+            matches the strings <FONT><SAMP>automata</SAMP></FONT> and <FONT><SAMP>automaton</SAMP></FONT>.
+            
+          </P>
+        </TD>
+      </TR>
+      <TR>
+        <TD VALIGN="TOP">
+          <IMG SRC="Images/green-ball-shadow.gif">
+        </TD>
+        <TD VALIGN="TOP">
+          <P>
+             The <FONT><SAMP>?</SAMP></FONT> operator specifies an optional
+            string: <FONT><I>tp</I><SAMP>?</SAMP></FONT> is equivalent to
+            <FONT><SAMP>(</SAMP><I>tp</I><SAMP>|)</SAMP></FONT>. For instance,
+            the tree pattern <FONT><SAMP>trees?</SAMP></FONT> matches the
+            strings <FONT><SAMP>tree</SAMP></FONT> and <FONT><SAMP>trees</SAMP></FONT>;
+            and the tree pattern <FONT><SAMP>white(</SAMP><SAMP>&nbsp;</SAMP><SAMP>|-)?space</SAMP></FONT>
+            matches the string <FONT><SAMP>whitespace</SAMP></FONT> as well
+            as <FONT><SAMP>white</SAMP><SAMP>&nbsp;</SAMP><SAMP>space</SAMP></FONT>
+            and <FONT><SAMP>white-space</SAMP></FONT> (We might also write
+            <FONT><SAMP>white[</SAMP><SAMP>&nbsp;</SAMP><SAMP>-]?space</SAMP></FONT>
+            for this). 
+          </P>
+        </TD>
+      </TR>
+      <TR>
+        <TD VALIGN="TOP">
+          <IMG SRC="Images/green-ball-shadow.gif">
+        </TD>
+        <TD VALIGN="TOP">
+          <P>
+             The operators <FONT><SAMP>*</SAMP></FONT> and <FONT><SAMP>+</SAMP></FONT>
+            specify a repetition of a subpattern: while <FONT><SAMP>+</SAMP></FONT>
+            requires at least one occurrence, <FONT><SAMP>*</SAMP></FONT>
+            allows also for omission of the part. For instance, the text pattern
+            <FONT><SAMP>[a-z]*</SAMP></FONT> matches a possibly empty sequence
+            of lower case ASCII letters, whereas <FONT><SAMP>[0-9]+</SAMP></FONT>
+            requires that at least one digit must be present. 
+          </P>
+          <P>
+             Note that a text pattern of the form <FONT><I>tp</I><SAMP>*</SAMP></FONT>
+            is equivalent to <FONT><SAMP>(</SAMP><I>tp</I><SAMP>+)?</SAMP></FONT>.
+            Note also that the individual instances of a repeated subpattern
+            need not match identical strings. Thus the text pattern <FONT><SAMP>(foo|bar)*</SAMP></FONT>
+            matches <FONT><SAMP>foobarfoofoo</SAMP></FONT> as well as <FONT><SAMP>barbarfoo</SAMP></FONT>.
+            
+          </P>
+        </TD>
+      </TR>
+      <TR>
+        <TD VALIGN="TOP">
+          <IMG SRC="Images/green-ball-shadow.gif">
+        </TD>
+        <TD VALIGN="TOP">
+          <P>
+             Parentheses are used for grouping subpatterns. They need only
+            be employed if the operator precedences do not match the structure
+            of the pattern. The precedence of operators is such that <FONT><SAMP>?</SAMP></FONT>,
+            <FONT><SAMP>*</SAMP></FONT> and <FONT><SAMP>+</SAMP></FONT> bind
+            most strongly, followed by concatenation and finally <FONT><SAMP>|</SAMP></FONT>.
+            For instance the text pattern <FONT><SAMP>a?b*|c+</SAMP></FONT>
+            is equivalent to <FONT><SAMP>((a?)(b*))|(c+)</SAMP></FONT>. 
+          </P>
+        </TD>
+      </TR>
+      <TR>
+        <TD VALIGN="TOP">
+          <IMG SRC="Images/green-ball-shadow.gif">
+        </TD>
+        <TD VALIGN="TOP">
+          <P>
+             <A NAME="TEXTSPECIAL"></A> The two text patterns <FONT><SAMP>^</SAMP></FONT>
+            and <FONT><SAMP>$</SAMP></FONT> match the empty string. However,
+            <FONT><SAMP>^</SAMP></FONT> only matches at the beginning of a
+            piece of text, i.e., before the first character, and <FONT><SAMP>$</SAMP></FONT>
+            only matches at the end of a text segment, i.e., after the last
+            character. Note that it doesn't make much sense to use <FONT><SAMP>^</SAMP></FONT>
+            and <FONT><SAMP>$</SAMP></FONT> other than at the beginning or
+            end of a text pattern. 
+          </P>
+          <P>
+             <A NAME="TEXTEXACT"></A> <FONT><SAMP>^</SAMP></FONT> and <FONT><SAMP>$</SAMP></FONT>
+            can be used for forcing a piece of text to match a text pattern
+            exactly rather than containing a match. For instance, the attribute
+            qualifier <FONT><SAMP>[@id~"^query$"]</SAMP></FONT> requires that
+            the value of attribute <FONT><SAMP>id</SAMP></FONT> be exactly
+            <FONT><SAMP>query</SAMP></FONT>, whereas <FONT><SAMP>[@id~"query"]</SAMP></FONT>
+            is fulfilled for all attribute values that contain the word <FONT><SAMP>query</SAMP></FONT>.
+            
+          </P>
+        </TD>
+      </TR>
+      <TR>
+        <TD VALIGN="TOP">
+          <IMG SRC="Images/green-ball-shadow.gif">
+        </TD>
+        <TD VALIGN="TOP">
+          <P>
+             The space character is treated as an abbreviation of the text
+            pattern <FONT><SAMP>~+</SAMP></FONT>, which matches a non-empty
+            sequence of white-space characters. The reason is that when searching
+            for a phrase, white space is usually not relevant, and the matching
+            should be independent of the line breaks or indentation. Therefore,
+            the text pattern <FONT><SAMP>to</SAMP><SAMP>&nbsp;</SAMP><SAMP>be</SAMP><SAMP>&nbsp;</SAMP><SAMP>or</SAMP><SAMP>&nbsp;</SAMP><SAMP>not</SAMP><SAMP>&nbsp;</SAMP><SAMP>to</SAMP><SAMP>&nbsp;</SAMP><SAMP>be</SAMP></FONT>
+            finds all occurrences of that phrase even if they are broken into
+            two lines. If the intention is to match exactly a single space
+            character, then it must be escaped with a backslash <FONT><SAMP>\</SAMP></FONT>
+            in the text pattern. 
+          </P>
+        </TD>
+      </TR>
+    </TABLE>
+    <P>
+      <IMG SRC="Images/shadow-big.jpg" ALT="-----------------" WIDTH="100%">
+    </P>
+    <ADDRESS>
+      <A HREF="http://www.informatik.uni-trier.de/~aberlea/">A. Berlea</A>
+      (<A HREF="mailto:aberlea@psi.uni-trier.de">aberlea@psi.uni-trier.de</A>)
+    </ADDRESS>
+  </BODY>
+</HTML>

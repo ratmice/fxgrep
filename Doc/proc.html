@@ -1,0 +1,204 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"
+                      "http://www.w3.org/TR/REC-html40/loose.dtd">
+<HTML>
+  <HEAD>
+    <TITLE>
+      fxgrep -  The Functional XML Querying Tool 
+    </TITLE>
+  </HEAD>
+  <BODY BGCOLOR="WHITE">
+    <H1>
+      <A HREF="http://www.informatik.uni-trier.de/~aberlea/Fxgrep/"><IMG SRC="Images/fxgrep.jpeg" ALT="fxgrep - " ALIGN="MIDDLE" BORDER="0"></A>
+      The Functional XML Querying Tool 
+    </H1>
+    <P>
+      <IMG SRC="Images/shadow-big.jpg" ALT="-----------------" WIDTH="100%">
+    </P>
+    <H2>
+      Contents
+    </H2>
+    <TABLE CELLPADDING="0" CELLSPACING="0">
+      <TR>
+        <TD>
+          <IMG SRC="Images/darkblue-ball-shadow.gif" ALT="0" HSPACE="5">
+        </TD>
+        <TD>
+          <A HREF="fxgrep.html#DESC"> What is <I>fxgrep</I>? </A>
+        </TD>
+      </TR>
+      <TR>
+        <TD>
+          <IMG SRC="Images/darkblue-ball-shadow.gif" ALT="0" HSPACE="5">
+        </TD>
+        <TD>
+          <A HREF="#MODEL"> The Processing Model of <I>fxgrep</I> </A>
+        </TD>
+      </TR>
+      <TR>
+        <TD>
+          <IMG SRC="Images/darkblue-ball-shadow.gif" ALT="0" HSPACE="5">
+        </TD>
+        <TD>
+          <A HREF="pattern.html#PAT"> The Pattern Language of <I>fxgrep</I>
+            </A>
+        </TD>
+      </TR>
+      <TR>
+        <TD>
+          <IMG SRC="Images/darkblue-ball-shadow.gif" ALT="0" HSPACE="5">
+        </TD>
+        <TD>
+          <A HREF="grammar.html#GRAM"> The Grammar Formalism of <I>fxgrep</I>
+            </A>
+        </TD>
+      </TR>
+      <TR>
+        <TD>
+          <IMG SRC="Images/darkblue-ball-shadow.gif" ALT="0" HSPACE="5">
+        </TD>
+        <TD>
+          <A HREF="textpat.html#TEXT"> Text Patterns </A>
+        </TD>
+      </TR>
+      <TR>
+        <TD>
+          <IMG SRC="Images/darkblue-ball-shadow.gif" ALT="0" HSPACE="5">
+        </TD>
+        <TD>
+          <A HREF="fxgrep.html#OPT"> <I>fxgrep</I> Options </A>
+        </TD>
+      </TR>
+    </TABLE>
+    <P>
+      <IMG SRC="Images/shadow-big.jpg" ALT="-----------------" WIDTH="100%">
+    </P>
+    <H2>
+      <A NAME="MODEL"></A> The Processing Model of <I>fxgrep</I> 
+    </H2>
+    <P>
+       <I>fxgrep</I> parses the input document according to the given parsing
+      options and constructs a <EM>document forest</EM> from it. This forest
+      is constructed from <EM>nodes</EM> corresponding to the logical structure
+      of the document: 
+    </P>
+    <TABLE>
+      <TR>
+        <TD VALIGN="TOP">
+          <IMG SRC="Images/green-ball-shadow.gif">
+        </TD>
+        <TD VALIGN="TOP">
+          <P>
+             There are three kinds of nodes: text nodes, PI nodes and element
+            nodes: 
+          </P>
+          <TABLE>
+            <TR>
+              <TD VALIGN="TOP">
+                <IMG SRC="Images/red-ball-shadow.gif">
+              </TD>
+              <TD VALIGN="TOP">
+                <P>
+                   A <EM>text node</EM> represents one or more adjacent pieces
+                  of character data. Two pieces of character data are considered
+                  <EM>adjacent</EM> if they are in the content of the same
+                  element and there is no other text, processing instruction
+                  or element between them. Note that this ignores comments:
+                  Two pieces of text separated by a comment are merged into
+                  a single text node. Moreover, the physical representation
+                  of the character data is irrelevant: A text node has no
+                  information about whether a piece of text was present literally
+                  in the XML source, or made up from entity references and
+                  CDATA sections. 
+                </P>
+              </TD>
+            </TR>
+            <TR>
+              <TD VALIGN="TOP">
+                <IMG SRC="Images/red-ball-shadow.gif">
+              </TD>
+              <TD VALIGN="TOP">
+                <P>
+                   A <EM>PI</EM> node represents a processing instruction
+                  and is annotated with the target name of the processing
+                  instruction. It has a single child: a text node giving the
+                  text of the processing instruction. 
+                </P>
+              </TD>
+            </TR>
+            <TR>
+              <TD VALIGN="TOP">
+                <IMG SRC="Images/red-ball-shadow.gif">
+              </TD>
+              <TD VALIGN="TOP">
+                <P>
+                   An <EM>element node</EM> represents an element and is annotated
+                  with the element type and the attributes specified for the
+                  element, including the defaulted ones. Each attribute value
+                  is given by the normalized text of the attribute value literal
+                  specified in the start-tag or in the attribute declaration.
+                  The children of an element node are a sequence of nodes
+                  constructed from the content of the element, in the same
+                  order as in the XML document source. Keep in mind that comments
+                  are ignored and adjacent pieces of text are merged into
+                  a single text node. In order to keep the representation
+                  independent from validation, white space in element content
+                  is represented by a text node. 
+                </P>
+              </TD>
+            </TR>
+          </TABLE>
+          <P>
+             The document forest is a sequence of nodes. It consists of a
+            single element node representing the document element, preceded
+            or followed by a processing instruction node for each processing
+            instruction which precedes or follows it in the XML document,
+            including those processing instructions that occur within the
+            DTD. 
+          </P>
+        </TD>
+      </TR>
+      <TR>
+        <TD VALIGN="TOP">
+          <IMG SRC="Images/green-ball-shadow.gif">
+        </TD>
+        <TD VALIGN="TOP">
+          <P>
+             For a node in the forest, the other children of its parent node
+            are called its <EM>siblings</EM>; those which precede it are the
+            left siblings and those that follow the right siblings. A <EM>descendant</EM>
+            of a node is either a child of the node or a descendant of one
+            of its children. Similarly, an <EM>ancestor</EM> of a node is
+            either its parent or an ancestor of its parent. A node together
+            with its descendants form the <EM>subtree rooted at</EM> that
+            node. For brevity, when the context is clear, we sometimes identify
+            a node with the element it represents or with the subtree rooted
+            at that node. 
+          </P>
+        </TD>
+      </TR>
+    </TABLE>
+    <P>
+       Normally, <I>fxgrep</I> implements a query by consecutive runs of two
+      forest automata, the first traversing from right to left and the second
+      traversing from left to right. The second pass reports all matches of
+      the query in document order. 
+    </P>
+    <P>
+       If the query is simple enough, a single run of an automaton suffices.
+      In this case <I>fxgrep</I> offers two processing modes: Either the automaton
+      is run on the constructed document forest (default), or it is run during
+      parsing, without explicitly constructing the forest. The second method
+      might be slower because it requires demand-driven construction of only those
+      parts of the document forest that might match the query, but it has
+      the advantage of avoiding in-memory construction of the possibly huge
+      document forest. This behavior is controlled by command-line options.
+    </P>
+    <P>
+      <IMG SRC="Images/shadow-big.jpg" ALT="-----------------" WIDTH="100%">
+    </P>
+    <ADDRESS>
+      <A HREF="http://www.informatik.uni-trier.de/~aberlea/">A. Berlea</A>
+      (<A HREF="mailto:aberlea@psi.uni-trier.de">aberlea@psi.uni-trier.de</A>)
+    </ADDRESS>
+  </BODY>
+</HTML>

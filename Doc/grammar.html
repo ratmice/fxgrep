@@ -1,0 +1,1598 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"
+                      "http://www.w3.org/TR/REC-html40/loose.dtd">
+<HTML>
+  <HEAD>
+    <TITLE>
+      fxgrep -  The Functional XML Querying Tool 
+    </TITLE>
+  </HEAD>
+  <BODY BGCOLOR="WHITE">
+    <H1>
+      <A HREF="http://www.informatik.uni-trier.de/~aberlea/Fxgrep/"><IMG SRC="Images/fxgrep.jpeg" ALT="fxgrep - " ALIGN="MIDDLE" BORDER="0"></A>
+      The Functional XML Querying Tool 
+    </H1>
+    <P>
+      <IMG SRC="Images/shadow-big.jpg" ALT="-----------------" WIDTH="100%">
+    </P>
+    <H2>
+      Contents
+    </H2>
+    <TABLE CELLPADDING="0" CELLSPACING="0">
+      <TR>
+        <TD>
+          <IMG SRC="Images/darkblue-ball-shadow.gif" ALT="0" HSPACE="5">
+        </TD>
+        <TD>
+          <A HREF="fxgrep.html#DESC"> What is <I>fxgrep</I>? </A>
+        </TD>
+      </TR>
+      <TR>
+        <TD>
+          <IMG SRC="Images/darkblue-ball-shadow.gif" ALT="0" HSPACE="5">
+        </TD>
+        <TD>
+          <A HREF="proc.html#MODEL"> The Processing Model of <I>fxgrep</I>
+            </A>
+        </TD>
+      </TR>
+      <TR>
+        <TD>
+          <IMG SRC="Images/darkblue-ball-shadow.gif" ALT="0" HSPACE="5">
+        </TD>
+        <TD>
+          <A HREF="pattern.html#PAT"> The Pattern Language of <I>fxgrep</I>
+            </A>
+        </TD>
+      </TR>
+      <TR>
+        <TD>
+          <IMG SRC="Images/darkblue-ball-shadow.gif" ALT="0" HSPACE="5">
+        </TD>
+        <TD>
+          <A HREF="#GRAM"> The Grammar Formalism of <I>fxgrep</I> </A>
+        </TD>
+      </TR>
+      <TR>
+        <TD>
+          <IMG SRC="Images/darkblue-ball-shadow.gif" ALT="0" HSPACE="5">
+        </TD>
+        <TD>
+          <A HREF="textpat.html#TEXT"> Text Patterns </A>
+        </TD>
+      </TR>
+      <TR>
+        <TD>
+          <IMG SRC="Images/darkblue-ball-shadow.gif" ALT="0" HSPACE="5">
+        </TD>
+        <TD>
+          <A HREF="fxgrep.html#OPT"> <I>fxgrep</I> Options </A>
+        </TD>
+      </TR>
+    </TABLE>
+    <P>
+      <IMG SRC="Images/shadow-big.jpg" ALT="-----------------" WIDTH="100%">
+    </P>
+    <H2>
+      <A NAME="GRAM"></A> The Grammar Formalism of <I>fxgrep</I> 
+    </H2>
+    <TABLE CELLPADDING="0" CELLSPACING="0">
+      <TR>
+        <TD>
+          <IMG SRC="Images/darkblue-ball-shadow.gif" ALT="0" HSPACE="5">
+        </TD>
+        <TD>
+          <A HREF="#GRAMINTRO"> Introduction </A>
+        </TD>
+      </TR>
+      <TR>
+        <TD>
+          <IMG SRC="Images/darkblue-ball-shadow.gif" ALT="0" HSPACE="5">
+        </TD>
+        <TD>
+          <A HREF="#SPECIALVARS"> Special Variables </A>
+        </TD>
+      </TR>
+      <TR>
+        <TD>
+          <IMG SRC="Images/darkblue-ball-shadow.gif" ALT="0" HSPACE="5">
+        </TD>
+        <TD>
+          <A HREF="#FORESTEXP"> Conjunction and Negation: Forest Expressions
+            </A>
+        </TD>
+      </TR>
+      <TR>
+        <TD>
+          <IMG SRC="Images/darkblue-ball-shadow.gif" ALT="0" HSPACE="5">
+        </TD>
+        <TD>
+          <A HREF="#GRAMWHITE"> White-Space Handling </A>
+        </TD>
+      </TR>
+      <TR>
+        <TD>
+          <IMG SRC="Images/darkblue-ball-shadow.gif" ALT="0" HSPACE="5">
+        </TD>
+        <TD>
+          <A HREF="#REGEXP"> Regular Expressions </A>
+        </TD>
+      </TR>
+      <TR>
+        <TD>
+          <IMG SRC="Images/darkblue-ball-shadow.gif" ALT="0" HSPACE="5">
+        </TD>
+        <TD>
+          <A HREF="#GRAMSYN"> Summary of the Grammar Syntax </A>
+        </TD>
+      </TR>
+      <TR>
+        <TD>
+          <IMG SRC="Images/darkblue-ball-shadow.gif" ALT="0" HSPACE="5">
+        </TD>
+        <TD>
+          <A HREF="#GRAMSPEC"> Specification of the Grammar </A>
+        </TD>
+      </TR>
+    </TABLE>
+    <P>
+      <IMG SRC="Images/shadow-med.jpg" ALT="-----------------" WIDTH="100%">
+    </P>
+    <H3>
+      <A NAME="GRAMINTRO"></A> Introduction 
+    </H3>
+    <P>
+       <I>fxgrep</I>'s grammar formalism is an alternative way of specifying
+      queries. It is less succinct but more expressive than the
+      pattern language.
+      For example, the pattern language cannot express the following query:      
+    </P>
+    <blockquote>
+       Find the elements of type <samp>b</samp> in a binary tree of
+       type <FONT><SAMP>a</SAMP></FONT> where left siblings are always of
+       type <FONT><SAMP>a</SAMP></FONT> and right siblings always of type
+       <FONT><SAMP>b</SAMP></FONT>.
+    </blockquote>
+    <P>
+      In the grammar formalism, this query is
+      expressible by the grammar: 
+    </P>
+    <blockquote>
+      <PRE>FORMULA
+  y
+START
+  _ x _
+RULES
+  x -> &lt;a> xy | &lt;a>
+  y -> &lt;b> xy | &lt;b>  </PRE>
+    </blockquote>
+
+
+    <P>
+      Consider for example the following query:
+    </P>
+
+    <blockquote>
+       A <FONT><SAMP>b</SAMP></FONT> element such that all of its ancestors
+      have element type <FONT><SAMP>a</SAMP></FONT>. 
+    </blockquote>
+    <P>
+      Note that this could be expressed in the pattern language by the
+      pattern <FONT><SAMP>(a/)+b</SAMP></FONT>.
+    <P>
+      In the grammar formalism, this query is
+      expressible using a recursive rule: 
+    </P>
+    <blockquote>
+      <PRE>FORMULA
+  x
+START
+  _ (x|y) _
+RULES
+  x -> &lt;b> _
+  y -> &lt;a> _ (x|y) _</PRE>
+    </blockquote>
+    <P>
+       Each rule of a grammar has a <EM>variable</EM> on its left-hand side;
+      the right-hand side specifies permitted <EM>expansions</EM> for this
+      variable. A grammar <EM>produces</EM> or <EM>derives</EM> a document
+      forest as follows: 
+    </P>
+    <TABLE>
+      <TR>
+        <TD VALIGN="TOP">
+          <IMG SRC="Images/green-ball-shadow.gif">
+        </TD>
+        <TD VALIGN="TOP">
+          <P>
+             Begin with a sequence of variables in the language of a start
+            expression. These are the expressions given after the <FONT><SAMP>START</SAMP></FONT>
+            keyword. In our example there is only one start expression, namely
+            <FONT><SAMP>_(x|y)_</SAMP></FONT>. We might thus begin with the
+            sequence of variables <FONT><SAMP>.y</SAMP></FONT> (see <A HREF="#REGEXP">regular
+              expressions</A>). 
+          </P>
+        </TD>
+      </TR>
+      <TR>
+        <TD VALIGN="TOP">
+          <IMG SRC="Images/green-ball-shadow.gif">
+        </TD>
+        <TD VALIGN="TOP">
+          <P>
+             Now repeatedly replace a variable with a partial tree matching
+            a right hand side given for this variable, until no variables
+            remain. The special variable <FONT><SAMP>.</SAMP></FONT> may be
+            replaced with an arbitrary document subtree. In the example, we
+            might perform the following steps: 
+          </P>
+          <TABLE>
+            <TR>
+              <TD VALIGN="TOP">
+                <IMG SRC="Images/red-ball-shadow.gif">
+              </TD>
+              <TD VALIGN="TOP">
+                <P>
+                   Replace the <FONT><SAMP>y</SAMP></FONT> with <FONT><SAMP>&lt;</SAMP><SAMP>a>.x.</SAMP><SAMP>&lt;</SAMP><SAMP>/a></SAMP></FONT>.
+                  This is possible because <FONT><SAMP>.x.</SAMP></FONT> is
+                  in the language of the regular expression <FONT><SAMP>_(x|y)_</SAMP></FONT>.
+                  We obtain the partial forest <FONT><SAMP>.&lt;a>.x.&lt;/a></SAMP></FONT>.
+                  
+                </P>
+              </TD>
+            </TR>
+            <TR>
+              <TD VALIGN="TOP">
+                <IMG SRC="Images/red-ball-shadow.gif">
+              </TD>
+              <TD VALIGN="TOP">
+                <P>
+                   Now we replace the first <FONT><SAMP>.</SAMP></FONT> with
+                  the processing instruction <FONT><SAMP>&lt;</SAMP><SAMP>?foo?></SAMP></FONT>,
+                  obtaining <FONT><SAMP>&lt;?foo?>&lt;a>.x.&lt;/a></SAMP></FONT>
+                  
+                </P>
+              </TD>
+            </TR>
+            <TR>
+              <TD VALIGN="TOP">
+                <IMG SRC="Images/red-ball-shadow.gif">
+              </TD>
+              <TD VALIGN="TOP">
+                <P>
+                   Since arbitrary subtrees may be substituted for <FONT><SAMP>.</SAMP></FONT>,
+                  we may also replace its two occurrences with text nodes,
+                  e.g., <FONT><SAMP>hello</SAMP></FONT> and <FONT><SAMP>world</SAMP></FONT>,
+                  yielding <FONT><SAMP>&lt;?foo?>&lt;a>helloxworld&lt;/a></SAMP></FONT>.
+                  (keep in mind that the <FONT><SAMP>x</SAMP></FONT> is still
+                  a variable) 
+                </P>
+              </TD>
+            </TR>
+            <TR>
+              <TD VALIGN="TOP">
+                <IMG SRC="Images/red-ball-shadow.gif">
+              </TD>
+              <TD VALIGN="TOP">
+                <P>
+                   In order two replace the <FONT><SAMP>x</SAMP></FONT>, we
+                  choose the singleton sequence of variables <FONT><SAMP>.</SAMP></FONT>
+                  which is in the language of <FONT><SAMP>_</SAMP></FONT>,
+                  and fill in <FONT><SAMP>&lt;</SAMP><SAMP>b>.</SAMP><SAMP>&lt;</SAMP><SAMP>/b></SAMP></FONT>.
+                  The result is <FONT><SAMP>&lt;?foo?>&lt;a>hello&lt;b>.&lt;/b>world&lt;/a></SAMP></FONT>
+                  
+                </P>
+              </TD>
+            </TR>
+            <TR>
+              <TD VALIGN="TOP">
+                <IMG SRC="Images/red-ball-shadow.gif">
+              </TD>
+              <TD VALIGN="TOP">
+                <P>
+                   Finally, we replace the <FONT><SAMP>.</SAMP></FONT> with
+                  an arbitrary tree, for instance <FONT><SAMP>&lt;</SAMP><SAMP>c/></SAMP></FONT>.
+                  We thus derived the forest <FONT><SAMP>&lt;?foo?>&lt;a>hello&lt;b>&lt;c/>&lt;/b>world&lt;/a></SAMP></FONT>
+                  from the grammar. 
+                </P>
+              </TD>
+            </TR>
+          </TABLE>
+        </TD>
+      </TR>
+      <TR>
+        <TD VALIGN="TOP">
+          <IMG SRC="Images/green-ball-shadow.gif">
+        </TD>
+        <TD VALIGN="TOP">
+          <P>For unary queries, as for example the one defined by the
+          grammar specified above, a node is a <EM>match</EM> of the
+          grammar if the boolean formula over variables specified
+          after <SAMP>FORMULA</SAMP> evaluates to true when each
+          variable is assigned <em>true</em> if there is a derivation
+          of the document forest in which the node is derived from the
+          variable, and <em>false</em> otherwise. In our example, this
+          is the <FONT><SAMP>b</SAMP></FONT> node, because there is a
+          derivation of it from <FONT><SAMP>x</SAMP></FONT> which is
+          the only variable in the formula.  In other derived forests,
+          there might also be more than one match.</P>
+        </TD>
+      </TR>
+      <TR>
+        <TD VALIGN="TOP">
+          <IMG SRC="Images/green-ball-shadow.gif">
+        </TD>
+        <TD VALIGN="TOP">
+          <P>For binary queries, a formula must be specified for the
+          primary match and one or more formula must be specified for
+          the secondary matches. A node is a primary match if the
+          primary formula is fulfilled as described above, and,
+          similary, a node is a secondary match if the corresponding
+          secondary formula is fulfilled. Furthermore, a set of
+          primary targets and one set of secondary targets have to be
+          specified for each secondary formula. A primary match node
+          and a secondary match node are reported together as a match
+          pair if there exists a derivation in which the primary node is
+          derived from a variable in the set of primary targets and
+          the secondary node is derived from a variable in the set of
+          secondary targets. For example to match all the
+          <samp>b</samp> nodes as above together with their
+          <samp>a</samp> fathers the following grammar can be
+          specified as follows:</P>
+        </TD>
+      </TR>
+    </TABLE>
+
+    <blockquote>
+      <PRE>FORMULA
+  x
+TARGETS 
+  x
+FORMULA
+  y
+TARGETS
+  y
+START
+  _ (x|y) _
+RULES
+  x -> &lt;b> _
+  y -> &lt;a> _ (x|y) _</PRE>
+    </blockquote>
+
+
+    <P>
+       All right hand sides appearing in this example specify element nodes.
+      Such a right hand side specifies between the <FONT><SAMP>&lt;</SAMP></FONT>
+      and <FONT><SAMP>></SAMP></FONT> an <A HREF="pattern.html#ELEMPAT">element-type
+        pattern </A> for the types of allowed elements and a list of possibly
+      negated attribute tests for its attributes. The meaning of these attribute
+      tests is the same as within <A HREF="pattern.html#NODEPAT">node patterns</A>
+      in the pattern syntax. For instance a right-hand side of the form <FONT><SAMP>&lt;</SAMP><SAMP>!a|b</SAMP><SAMP>&nbsp;</SAMP><SAMP>x</SAMP><SAMP>&nbsp;</SAMP><SAMP>y="1"</SAMP><SAMP>&nbsp;</SAMP><SAMP>!z~"1">_</SAMP></FONT>
+      allows to fill in an element node whose type is different from <FONT><SAMP>a</SAMP></FONT>
+      and <FONT><SAMP>b</SAMP></FONT>, and which has an attribute named <FONT><SAMP>x</SAMP></FONT>,
+      and attribute <FONT><SAMP>y</SAMP></FONT> with value <FONT><SAMP>1</SAMP></FONT>,
+      and either no attribute <FONT><SAMP>z</SAMP></FONT> or one whose value
+      does not contain <FONT><SAMP>1</SAMP></FONT>. 
+    </P>
+    <P>
+       Alternatively, a right-hand side of a grammar can specify a processing
+      instruction. An example is <FONT><SAMP>&lt;</SAMP><SAMP>?^fxp-?></SAMP><SAMP>&nbsp;</SAMP><SAMP>_</SAMP></FONT>,
+      which allows any target that begins with the string <FONT><SAMP>fxp-</SAMP></FONT>,
+      as indicated by the text pattern between <FONT><SAMP>&lt;</SAMP><SAMP>?</SAMP></FONT>
+      and <FONT><SAMP>?></SAMP></FONT>. It is followed by a regular expression
+      which specifies the content of the processing instruction, i.e., its
+      text. This regular expression should therefore be a single variable.
+      
+    </P>
+    <P>
+       The third kind of right-hand sides specify text nodes which must contain
+      a substring matching a <A HREF="textpat.html#TEXT">text pattern</A>
+      given between a pair of quotes, e.g., <FONT><SAMP>'hurlyburly'</SAMP></FONT>.
+      If an exact match of the text pattern is desired, the text pattern must
+      be enclosed between <FONT><SAMP>^</SAMP></FONT> and <FONT><SAMP>$</SAMP></FONT>
+      (see <A HREF="textpat.html#TEXTEXACT">below</A>). 
+    </P>
+    <P>
+      <IMG SRC="Images/shadow-med.jpg" ALT="-----------------" WIDTH="100%">
+    </P>
+    <H3>
+      <A NAME="SPECIALVARS"></A> Special Variables 
+    </H3>
+    <P>
+       <I>fxgrep</I> provides two predefined variables <FONT><SAMP>.</SAMP></FONT>
+      and <FONT><SAMP>~</SAMP></FONT>, describing arbitrary trees and white
+      space. In this context, white space means either a sequence of white-space
+      characters or a processing instruction. These two variables are defined
+      by the following grammar rules: 
+    </P>
+    <blockquote>
+      <PRE>~ -> "^ $"
+~ -> &lt;??> .**
+
+. -> ""
+. -> &lt;??> .**
+. -> &lt;*> .**</PRE>
+    </blockquote>
+    <P>
+      <IMG SRC="Images/shadow-med.jpg" ALT="-----------------" WIDTH="100%">
+    </P>
+    <H3>
+      <A NAME="FORESTEXP"></A> Conjunction and Negation: Forest Expressions
+      
+    </H3>
+    <P>
+       The pattern language allows specification of multiple, possibly negated
+      structure qualifiers for a single node pattern. Analogously, the grammar
+      syntax allows multiple, possibly negated regular expressions on the
+      right-hand sides of rules, in the form of <EM>forest expressions</EM>.
+      A forest expression is composed from regular expressions using the operator
+      <FONT><SAMP>&amp;</SAMP><SAMP>&amp;</SAMP></FONT>; each single regular
+      expression may be negated by <FONT><SAMP>!</SAMP></FONT>. 
+    </P>
+    <P>
+       However, the meaning of a grammar with conjunction and negation cannot
+      be given with the concept of a single derivation. If a node was generated
+      by a rule with conjunction, then there must be a derivation for its
+      children under each of the given regular expressions; if one of these
+      regular expressions is negated, then there must not be a derivation.
+      Moreover, a node can only be a match of the grammar if no negated regular
+      expression was applied for all of its ancestors. For example, consider
+      the following grammar: 
+    </P>
+    <blockquote>
+      <PRE>FORMULA
+  y
+START
+  _ x _
+RULES
+  x -> &lt;a> _ x _
+  x -> &lt;a> _ y _ &amp;&amp; ! _ z _
+  y -> &lt;b>
+  z -> &lt;c> y</PRE>
+    </blockquote>
+    <P>
+       According to the second rule, all trees can be derived from variable
+      <FONT><SAMP>x</SAMP></FONT> that have type <FONT><SAMP>a</SAMP></FONT>
+      and whose children can be derived from <FONT><SAMP>_</SAMP><SAMP>&nbsp;</SAMP><SAMP>y</SAMP><SAMP>&nbsp;</SAMP><SAMP>_</SAMP></FONT>
+      but not from <FONT><SAMP>_</SAMP><SAMP>&nbsp;</SAMP><SAMP>z</SAMP><SAMP>&nbsp;</SAMP><SAMP>_</SAMP></FONT>.
+      Therefore the grammar derives all forests that contain an empty element
+      of type <FONT><SAMP>b</SAMP></FONT>, all of whose ancestors have type
+      <FONT><SAMP>a</SAMP></FONT> and that does not have a sibling of type
+      <FONT><SAMP>c</SAMP></FONT> with a single empty child of type <FONT><SAMP>b</SAMP></FONT>.
+      This first <FONT><SAMP>b</SAMP></FONT> element is also a match of the
+      grammar in that forest. For instance, the <FONT><SAMP>b</SAMP></FONT>
+      node is a match in the document <FONT><SAMP>&lt;</SAMP><SAMP>a></SAMP><SAMP>&lt;</SAMP><SAMP>a></SAMP><SAMP>&lt;</SAMP><SAMP>b/></SAMP><SAMP>&lt;</SAMP><SAMP>c/></SAMP><SAMP>&lt;</SAMP><SAMP>/a></SAMP><SAMP>&lt;</SAMP><SAMP>/a></SAMP></FONT>,
+      but there is no derivation (and thus no match) for the document <FONT><SAMP>&lt;</SAMP><SAMP>a></SAMP><SAMP>&lt;</SAMP><SAMP>b/></SAMP><SAMP>&lt;</SAMP><SAMP>c></SAMP><SAMP>&lt;</SAMP><SAMP>b/></SAMP><SAMP>&lt;</SAMP><SAMP>/c></SAMP><SAMP>&lt;</SAMP><SAMP>/a></SAMP></FONT>.
+      
+    </P>
+    <P>
+      <IMG SRC="Images/shadow-med.jpg" ALT="-----------------" WIDTH="100%">
+    </P>
+    <H3>
+      <A NAME="GRAMWHITE"></A> White-Space Handling 
+    </H3>
+    <P>
+       XML documents are often indented according to the element structure
+      by inserting line breaks and white space. Moreover, comments - which
+      are ignored by <I>fxgrep</I> - are often written into a separate line,
+      introducing extra white space. Similarly, a processing instruction may
+      be placed at arbitrary positions within content without being a significant
+      part of it. Therefore <I>fxgrep</I> considers processing instructions
+      as white space as well. 
+    </P>
+    <P>
+       When querying a document, one usually wants to ignore this extra white
+      space. Therefore <I>fxgrep</I> implicitly allows white space between
+      elements, and at the start and end of an element's content. For instance,
+      the language of the regular expression <FONT><SAMP>x*y</SAMP></FONT>
+      contains <FONT><SAMP>~~x~x~~~y~</SAMP></FONT> as well as <FONT><SAMP>xxy</SAMP></FONT>.
+      In order to avoid this behavior, there are two possibilities: 
+    </P>
+    <TABLE>
+      <TR>
+        <TD VALIGN="TOP">
+          <IMG SRC="Images/green-ball-shadow.gif">
+        </TD>
+        <TD VALIGN="TOP">
+          <P>
+             Enclosing a regular expression into
+             <FONT><SAMP>^,</SAMP></FONT> and
+             <FONT><SAMP>,$</SAMP></FONT> disallows leading and
+             trailing white-space (<samp>^</samp> and <samp>$</samp>
+             prohibit an arbitrary sequence before and after
+             respectively, while <samp>,</samp> prohibits white
+             spaces).  Thus <FONT><SAMP>x~x~~~y</SAMP></FONT> is in
+             the language of the regular expression
+             <FONT><SAMP>^,x*y,$</SAMP></FONT> whereas
+             <FONT><SAMP>~xxy~</SAMP></FONT> is not.
+          </P>
+        </TD>
+      </TR>
+      <TR>
+        <TD VALIGN="TOP">
+          <IMG SRC="Images/green-ball-shadow.gif">
+        </TD>
+        <TD VALIGN="TOP">
+          <P>
+             Using the operator <FONT><SAMP>,</SAMP></FONT> for concatenation
+            and <FONT><SAMP>++</SAMP></FONT> and <FONT><SAMP>**</SAMP></FONT>
+            for repetition disallows the white space between elements. Thus
+            <FONT><SAMP>~xxy~</SAMP></FONT> is in the language of the regular
+            expression <FONT><SAMP>x**,y</SAMP></FONT> whereas <FONT><SAMP>x~x~~~y</SAMP></FONT>
+            is not. 
+          </P>
+        </TD>
+      </TR>
+    </TABLE>
+    <P>
+      <IMG SRC="Images/shadow-med.jpg" ALT="-----------------" WIDTH="100%">
+    </P>
+    <H3>
+      <A NAME="REGEXP"></A> Regular Expressions 
+    </H3>
+    <P>
+       The regular expressions of <I>fxgrep</I> grammars are an extended form
+      of conventional regular expressions. A regular expression is composed
+      from variable names, <IMG SRC="Images/epsilon.gif">, <FONT><SAMP>^</SAMP></FONT>,
+      <FONT><SAMP>$</SAMP></FONT>, <FONT><SAMP>~</SAMP></FONT> and <FONT><SAMP>_</SAMP></FONT>
+      using unary operators <FONT><SAMP>?</SAMP></FONT>, <FONT><SAMP>*</SAMP></FONT>,
+      <FONT><SAMP>**</SAMP></FONT>, <FONT><SAMP>+</SAMP></FONT>, <FONT><SAMP>++</SAMP></FONT>
+      and binary operators <FONT><SAMP>|</SAMP></FONT> <FONT><SAMP>,</SAMP></FONT>
+      and concatenation. 
+    </P>
+    <TABLE BGCOLOR="#FFFFD0" WIDTH="100%" BORDER="1" ALIGN="CENTER" CELLPADDING="5">
+      <TR>
+        <TD>
+          <TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0">
+            <TR>
+              <TD HEIGHT="5">
+              </TD>
+            </TR>
+            <TR>
+              <TD ALIGN="RIGHT">
+                <I>RegularExpression</I>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">::=</FONT></B>
+              </TD>
+              <TD>
+                <SAMP>^</SAMP><B><FONT COLOR="#00C000">?</FONT></B><I>RegExp</I><SAMP>$</SAMP><B><FONT COLOR="#00C000">?</FONT></B>
+              </TD>
+            </TR>
+            <TR>
+              <TD HEIGHT="5">
+              </TD>
+            </TR>
+            <TR>
+              <TD ALIGN="RIGHT">
+                <I>RegExp</I>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">::=</FONT></B>
+              </TD>
+              <TD>
+                <IMG SRC="Images/epsilon.gif"><SAMP> </SAMP><B><FONT COLOR="#00C000">|</FONT></B><SAMP>
+                  . </SAMP><B><FONT COLOR="#00C000">|</FONT></B><SAMP> ~ </SAMP><B><FONT COLOR="#00C000">|</FONT></B><SAMP>
+                  _ </SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>Variable</I>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <SAMP>(</SAMP><I>RegExp</I><SAMP>)</SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>RegExp</I><SAMP>?</SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>RegExp</I><SAMP>*</SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>RegExp</I><SAMP>+</SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>RegExp</I><SAMP>**</SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>RegExp</I><SAMP>++</SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>RegExp</I><SAMP> </SAMP><I>RegExp</I>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>RegExp</I><SAMP>, </SAMP><I>RegExp</I>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>RegExp</I><SAMP> | </SAMP><I>RegExp</I>
+              </TD>
+            </TR>
+          </TABLE>
+        </TD>
+      </TR>
+    </TABLE>
+    <P>
+       A regular expression describes a set of sequences of variables, called
+      its <EM>language</EM>. This language is defined as follows: 
+    </P>
+    <TABLE>
+      <TR>
+        <TD VALIGN="TOP">
+          <IMG SRC="Images/green-ball-shadow.gif">
+        </TD>
+        <TD VALIGN="TOP">
+          <P>
+             The language of a regular expression consisting of a variable
+            <FONT><SAMP>x</SAMP></FONT> contains only the unary sequence <FONT><SAMP>x</SAMP></FONT>.
+            The two symbols <FONT><SAMP>.</SAMP></FONT> and <FONT><SAMP>~</SAMP></FONT>
+            are predefined <A HREF="#SPECIALVARS">special variables</A>. 
+          </P>
+        </TD>
+      </TR>
+      <TR>
+        <TD VALIGN="TOP">
+          <IMG SRC="Images/green-ball-shadow.gif">
+        </TD>
+        <TD VALIGN="TOP">
+          <P>
+             The language of the empty regular expression (<IMG SRC="Images/epsilon.gif">)
+            consists only of the empty sequence. The language of <FONT><SAMP>_</SAMP></FONT>
+            contains all sequences of <FONT><SAMP>.</SAMP></FONT> including
+            the empty sequence (it is an abbreviation for <FONT><SAMP>.**</SAMP></FONT>).
+            
+          </P>
+        </TD>
+      </TR>
+      <TR>
+        <TD VALIGN="TOP">
+          <IMG SRC="Images/green-ball-shadow.gif">
+        </TD>
+        <TD VALIGN="TOP">
+          <P>
+             A regular expression of the form <FONT><FONT><I>e</I><SUB>1</SUB></FONT><SAMP>|</SAMP><FONT><I>e</I><SUB>2</SUB></FONT></FONT>
+            denotes the disjunction of both subexpressions. Its language is
+            the union of the languages of <FONT><I>e</I><SUB>1</SUB></FONT>
+            and <FONT><I>e</I><SUB>2</SUB></FONT>. 
+          </P>
+        </TD>
+      </TR>
+      <TR>
+        <TD VALIGN="TOP">
+          <IMG SRC="Images/green-ball-shadow.gif">
+        </TD>
+        <TD VALIGN="TOP">
+          <P>
+             There are two kinds of concatenation. The first one has the form
+            <FONT><FONT><I>e</I><SUB>1</SUB></FONT><SAMP>,</SAMP><FONT><I>e</I><SUB>2</SUB></FONT></FONT>.
+            Its language consists of all sequences obtained by appending a
+            sequence from the language of <FONT><I>e</I><SUB>2</SUB></FONT>
+            to a sequence in the language of <FONT><I>e</I><SUB>1</SUB></FONT>.
+            The second form of concatenation drops the comma and allows a
+            sequence of <FONT><SAMP>~</SAMP></FONT>'s between the two subsequences.
+            More precisely, a regular expression of the form <FONT><FONT><I>e</I><SUB>1</SUB></FONT><FONT><I>e</I><SUB>2</SUB></FONT></FONT>
+            is an abbreviation for <FONT><FONT><I>e</I><SUB>1</SUB></FONT><SAMP>,~**,</SAMP><FONT><I>e</I><SUB>2</SUB></FONT></FONT>.
+            
+          </P>
+        </TD>
+      </TR>
+      <TR>
+        <TD VALIGN="TOP">
+          <IMG SRC="Images/green-ball-shadow.gif">
+        </TD>
+        <TD VALIGN="TOP">
+          <P>
+             The <FONT><SAMP>?</SAMP></FONT> specifies an optional subsequence,
+            i.e., the regular expression <FONT><I>e</I><SAMP>?</SAMP></FONT>
+            is an abbreviation for <FONT><SAMP>(</SAMP><I>e</I><SAMP>|)</SAMP></FONT>.
+            
+          </P>
+        </TD>
+      </TR>
+      <TR>
+        <TD VALIGN="TOP">
+          <IMG SRC="Images/green-ball-shadow.gif">
+        </TD>
+        <TD VALIGN="TOP">
+          <P>
+             A regular expression of the form <FONT><I>e</I><SAMP>++</SAMP></FONT>
+            denotes the repetition of <I>e</I>. Its language is the set of
+            all sequences obtained by concatenating one or more sequences
+            from the language of <I>e</I>. A similar operator is <FONT><SAMP>+</SAMP></FONT>
+            which allows a sequence of <FONT><SAMP>~</SAMP></FONT>'s after
+            each subsequence, that is, <FONT><I>e</I><SAMP>+</SAMP></FONT>
+            is an abbreviation for <FONT><SAMP>(</SAMP><I>e</I><SAMP>,~**)+</SAMP></FONT>.
+            The operators <FONT><SAMP>**</SAMP></FONT> and <FONT><SAMP>*</SAMP></FONT>
+            are analogous, except that they allow additionally the empty sequence.
+            
+          </P>
+        </TD>
+      </TR>
+    </TABLE>
+    <P>
+       A whole regular expression implicitly allows for a leading and
+       trailing sequence of arbitrary nodes. That is, a regular
+       expression <I>e</I> is treated as if it were
+       <FONT><SAMP.*,</SAMP><I>e</I><SAMP>,.*</SAMP></FONT>.
+       Preceding the regular expression with a
+       <FONT><SAMP>^</SAMP></FONT> or succeeding it with a
+       <FONT><SAMP>$</SAMP></FONT> prohibits the leading and trailing
+       arbitrary sequence, respectively. The
+       <FONT><SAMP>^</SAMP></FONT> and <FONT><SAMP>$</SAMP></FONT> are
+       only allowed at the start and end of a regular expression.
+    </P>
+    <P>
+      <IMG SRC="Images/shadow-med.jpg" ALT="-----------------" WIDTH="100%">
+    </P>
+    <H3>
+      <A NAME="GRAMSYN"></A> Summary of the Grammar Syntax 
+    </H3>
+    <TABLE BGCOLOR="#FFFFD0" WIDTH="100%" BORDER="1" ALIGN="CENTER" CELLPADDING="5">
+      <TR>
+        <TD>
+          <TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0">
+            <TR>
+              <TD HEIGHT="5">
+              </TD>
+            </TR>
+            <TR>
+              <TD ALIGN="RIGHT">
+                <I>Grammar</I>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">::=</FONT></B>
+              </TD>
+              <TD>
+                <I>Targets</I><SAMP> </SAMP><I>Sep</I><SAMP> </SAMP><I>StartExpressions</I><SAMP>
+                  </SAMP><I>Rules</I><SAMP> </SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD HEIGHT="5">
+              </TD>
+            </TR>
+            <TR>
+              <TD ALIGN="RIGHT">
+                <I>Targets</I>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">::=</FONT></B>
+              </TD>
+              <TD>
+                <I>PrimaryTargets</I> <I>SecondaryTargets</I><B><FONT COLOR="#00C000">*</FONT></B>
+              </TD>
+            </TR>
+            <TR>
+              <TD ALIGN="RIGHT">
+                <I>PrimaryTargets</I>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">::=</FONT></B>
+              </TD>
+              <TD>
+                <SAMP>FORMULA </SAMP><I>Formula</I><B></B>
+              </TD>
+            </TR>
+            <TR>
+              <TD/>
+              <TD/>
+              <TD>
+                <SAMP>TARGETS </SAMP><I>Variable</I><B><FONT COLOR="#00C000">+</FONT></B>
+              </TD>
+            </TR>
+            <TR>
+              <TD HEIGHT="5">
+              </TD>
+            </TR>
+            <TR>
+              <TD ALIGN="RIGHT">
+                <I>SecondaryTargets</I>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">::=</FONT></B>
+              </TD>
+              <TD>
+                <SAMP>FORMULA </SAMP><I>Formula</I><B></B>
+              </TD>
+            </TR>
+            <TR>
+              <TD/>
+              <TD/>
+              <TD>
+                <SAMP>TARGETS </SAMP><I>Variable</I><B><FONT COLOR="#00C000">+</FONT></B>
+              </TD>
+            </TR>
+            <TR>
+              <TD HEIGHT="5">
+              </TD>
+            </TR>
+            <TR>
+              <TD ALIGN="RIGHT">
+                <I>StartExpressions</I>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">::=</FONT></B>
+              </TD>
+              <TD>
+                <SAMP>START </SAMP><I>ForestExpression</I><SAMP> </SAMP><B><FONT COLOR="#00C000">(</FONT></B><SAMP>
+                  </SAMP><I>Or</I><SAMP> </SAMP><I>ForestExpression</I><SAMP>
+                  </SAMP><B><FONT COLOR="#00C000">)</FONT></B><B><FONT COLOR="#00C000">*</FONT></B>
+              </TD>
+            </TR>
+            <TR>
+              <TD HEIGHT="5">
+              </TD>
+            </TR>
+            <TR>
+              <TD ALIGN="RIGHT">
+                <I>Rules</I>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">::=</FONT></B>
+              </TD>
+              <TD>
+                <SAMP>RULES </SAMP><I>Rule</I><SAMP> </SAMP><B><FONT COLOR="#00C000">(</FONT></B><SAMP>
+                  </SAMP><I>Sep</I><SAMP> </SAMP><I>Rule</I><SAMP> </SAMP><B><FONT COLOR="#00C000">)</FONT></B><B><FONT COLOR="#00C000">*</FONT></B>
+              </TD>
+            </TR>
+            <TR>
+              <TD HEIGHT="5">
+              </TD>
+            </TR>
+            <TR>
+              <TD ALIGN="RIGHT">
+                <I>Rule</I>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">::=</FONT></B>
+              </TD>
+              <TD>
+                <I>Variable</I><SAMP> -> </SAMP><I>RightHandSide</I>
+              </TD>
+            </TR>
+            <TR>
+              <TD HEIGHT="5">
+              </TD>
+            </TR>
+            <TR>
+              <TD ALIGN="RIGHT">
+                <I>RightHandSide</I>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">::=</FONT></B>
+              </TD>
+              <TD>
+                <SAMP>'</SAMP><I>TextPattern</I><SAMP>'</SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <SAMP>"</SAMP><I>TextPattern</I><SAMP>"</SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <SAMP>&lt;</SAMP><SAMP>?</SAMP><I>TextPattern</I><SAMP>?>
+                  </SAMP><I>ForestExpression</I>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <SAMP>&lt;</SAMP><I>ElementTypePattern</I><SAMP> </SAMP><I>AttributePattern</I><B><FONT COLOR="#00C000">*</FONT></B><SAMP>>
+                  </SAMP><I>ForestExpression</I>
+              </TD>
+            </TR>
+            <TR>
+              <TD HEIGHT="5">
+              </TD>
+            </TR>
+            <TR>
+              <TD ALIGN="RIGHT">
+                <I>ElementTypePattern</I>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">::=</FONT></B>
+              </TD>
+              <TD>
+                <SAMP>*</SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>ElementType</I><SAMP> </SAMP><B><FONT COLOR="#00C000">(</FONT></B><SAMP>
+                  | </SAMP><I>ElementType</I><SAMP> </SAMP><B><FONT COLOR="#00C000">)</FONT></B><B><FONT COLOR="#00C000">*</FONT></B>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <SAMP>!</SAMP><I>ElementType</I><SAMP> </SAMP><B><FONT COLOR="#00C000">(</FONT></B><SAMP>
+                  | </SAMP><I>ElementType</I><SAMP> </SAMP><B><FONT COLOR="#00C000">)</FONT></B><B><FONT COLOR="#00C000">*</FONT></B>
+              </TD>
+            </TR>
+            <TR>
+              <TD HEIGHT="5">
+              </TD>
+            </TR>
+            <TR>
+              <TD ALIGN="RIGHT">
+                <I>AttributePattern</I>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">::=</FONT></B>
+              </TD>
+              <TD>
+                <I>AttributeTest</I>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <SAMP>!</SAMP><I>AttributeTest</I>
+              </TD>
+            </TR>
+            <TR>
+              <TD HEIGHT="5">
+              </TD>
+            </TR>
+            <TR>
+              <TD ALIGN="RIGHT">
+                <I>AttributeTest</I>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">::=</FONT></B>
+              </TD>
+              <TD>
+                <I>AttributeName</I>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>AttributeName</I><SAMP>='</SAMP><I>TreePattern</I><SAMP>'</SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>AttributeName</I><SAMP>="</SAMP><I>TreePattern</I><SAMP>"</SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>AttributeName</I><SAMP>~'</SAMP><I>TreePattern</I><SAMP>'</SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>AttributeName</I><SAMP>~"</SAMP><I>TreePattern</I><SAMP>"</SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD HEIGHT="5">
+              </TD>
+            </TR>
+            <TR>
+              <TD ALIGN="RIGHT">
+                <I>ForestExpression</I>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">::=</FONT></B>
+              </TD>
+              <TD>
+                <I>RegularExpression</I>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <SAMP>! </SAMP><I>RegularExpression</I>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>ForestExpression</I><SAMP> </SAMP><SAMP>&amp;</SAMP><SAMP>&amp;</SAMP><SAMP>
+                  </SAMP><I>ForestExpression</I>
+              </TD>
+            </TR>
+            <TR>
+              <TD HEIGHT="5">
+              </TD>
+            </TR>
+            <TR>
+              <TD ALIGN="RIGHT">
+                <I>RegularExpression</I>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">::=</FONT></B>
+              </TD>
+              <TD>
+                <SAMP>^</SAMP><B><FONT COLOR="#00C000">?</FONT></B><I>RegExp</I><SAMP>$</SAMP><B><FONT COLOR="#00C000">?</FONT></B>
+              </TD>
+            </TR>
+            <TR>
+              <TD HEIGHT="5">
+              </TD>
+            </TR>
+            <TR>
+              <TD ALIGN="RIGHT">
+                <I>RegExp</I>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">::=</FONT></B>
+              </TD>
+              <TD>
+                <IMG SRC="Images/epsilon.gif"><SAMP> </SAMP><B><FONT COLOR="#00C000">|</FONT></B><SAMP>
+                  . </SAMP><B><FONT COLOR="#00C000">|</FONT></B><SAMP> ~ </SAMP><B><FONT COLOR="#00C000">|</FONT></B><SAMP>
+                  _ </SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>Variable</I>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <SAMP>(</SAMP><I>RegExp</I><SAMP>)</SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>RegExp</I><SAMP>?</SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>RegExp</I><SAMP>*</SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>RegExp</I><SAMP>+</SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>RegExp</I><SAMP>**</SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>RegExp</I><SAMP>++</SAMP>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>RegExp</I><SAMP> </SAMP><I>RegExp</I>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>RegExp</I><SAMP>, </SAMP><I>RegExp</I>
+              </TD>
+            </TR>
+            <TR>
+              <TD>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>RegExp</I><SAMP> | </SAMP><I>RegExp</I>
+              </TD>
+            </TR>
+            <TR>
+              <TD HEIGHT="5">
+              </TD>
+            </TR>
+            <TR>
+              <TD ALIGN="RIGHT">
+                <I>Sep</I>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">::=</FONT></B>
+              </TD>
+              <TD>
+                <I>NewLine</I><B><FONT COLOR="#00C000">*</FONT></B><SAMP>
+                  </SAMP><B><FONT COLOR="#00C000">(</FONT></B><SAMP> ; </SAMP><B><FONT COLOR="#00C000">|</FONT></B><SAMP>
+                  </SAMP><I>NewLine</I><SAMP> </SAMP><B><FONT COLOR="#00C000">)</FONT></B><SAMP>
+                  </SAMP><I>NewLine</I><B><FONT COLOR="#00C000">*</FONT></B>
+              </TD>
+            </TR>
+            <TR>
+              <TD HEIGHT="5">
+              </TD>
+            </TR>
+            <TR>
+              <TD ALIGN="RIGHT">
+                <I>Or</I>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">::=</FONT></B>
+              </TD>
+              <TD>
+                <I>NewLine</I><B><FONT COLOR="#00C000">*</FONT></B><SAMP>
+                  </SAMP><B><FONT COLOR="#00C000">(</FONT></B><SAMP> || </SAMP><B><FONT COLOR="#00C000">|</FONT></B><SAMP>
+                  </SAMP><I>NewLine</I><SAMP> </SAMP><B><FONT COLOR="#00C000">)</FONT></B><SAMP>
+                  </SAMP><I>NewLine</I><B><FONT COLOR="#00C000">*</FONT></B>
+              </TD>
+            </TR>
+            <TR>
+              <TD HEIGHT="5">
+              </TD>
+            </TR>
+            <TR>
+              <TD ALIGN="RIGHT">
+                <I>Variable</I>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">::=</FONT></B>
+              </TD>
+              <TD>
+                <I>(a variable name)</I>
+              </TD>
+            </TR>
+            <TR>
+              <TD HEIGHT="5">
+              </TD>
+            </TR>
+            <TR>
+              <TD ALIGN="RIGHT">
+                <I>Formula</I>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">::=</FONT></B>
+              </TD>
+              <TD>
+                <I>Variable</I>
+              </TD>
+            </TR>
+            <TR>
+              <TD/>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>Formula</I> | <I>Formula</I>
+              </TD>
+            </TR>
+            <TR>
+              <TD/>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                <I>Formula</I> & <I>Formula</I>
+              </TD>
+            </TR>
+            <TR>
+              <TD/>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                ! <I>Formula</I>
+              </TD>
+            </TR>
+            <TR>
+              <TD/>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">|</FONT></B>
+              </TD>
+              <TD>
+                (<I>Formula</I>)
+              </TD>
+            </TR>
+            <TR>
+              <TD HEIGHT="5">
+              </TD>
+            </TR>
+            <TR>
+              <TD ALIGN="RIGHT">
+                <I>ElementType</I>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">::=</FONT></B>
+              </TD>
+              <TD>
+                <I>(an element type)</I>
+              </TD>
+            </TR>
+            <TR>
+              <TD HEIGHT="5">
+              </TD>
+            </TR>
+            <TR>
+              <TD ALIGN="RIGHT">
+                <I>AttributeName</I>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">::=</FONT></B>
+              </TD>
+              <TD>
+                <I>(an attribute name)</I>
+              </TD>
+            </TR>
+            <TR>
+              <TD HEIGHT="5">
+              </TD>
+            </TR>
+            <TR>
+              <TD ALIGN="RIGHT">
+                <I>TextPattern</I>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">::=</FONT></B>
+              </TD>
+              <TD>
+                <I>(a text pattern)</I>
+              </TD>
+            </TR>
+            <TR>
+              <TD HEIGHT="5">
+              </TD>
+            </TR>
+            <TR>
+              <TD ALIGN="RIGHT">
+                <I>NewLine</I>
+              </TD>
+              <TD ALIGN="MIDDLE">
+                <B><FONT COLOR="#00C000">::=</FONT></B>
+              </TD>
+              <TD>
+                <I>(a line break)</I>
+              </TD>
+            </TR>
+          </TABLE>
+        </TD>
+      </TR>
+    </TABLE>
+    <P>
+      <IMG SRC="Images/shadow-med.jpg" ALT="-----------------" WIDTH="100%">
+    </P>
+    <H3>
+      <A NAME="GRAMSPEC"></A> Specification of the grammar
+    </H3>
+    <P>
+      The query can be specified as a grammar using the 
+      <FONT><SAMP>-g</SAMP></FONT> or <FONT><SAMP>--grammar</SAMP></FONT>
+      option.
+       <I>fxgrep</I> offers two syntaxes for grammars. If the suffix of the
+      file is different from <FONT><SAMP>.xml</SAMP></FONT> and <FONT><SAMP>.XML</SAMP></FONT>,
+      then the grammar is read from a file and interpreted in the syntax described
+      <A HREF="grammar.html#GRAMSYN">above</A>. In order to use arbitrary
+      Unicode characters in the grammar, the file must be encoded in UTF-8
+      or UTF-16. If the suffix of the file is <FONT><SAMP>.xml</SAMP></FONT>
+      or <FONT><SAMP>.XML</SAMP></FONT>, then the grammar is parsed as an
+      XML document which should conform to the following DTD: 
+    </P>
+    <TABLE BGCOLOR="#C0E0FF" WIDTH="100%" BORDER="1" ALIGN="CENTER" CELLPADDING="5">
+      <TR>
+        <TD>
+          <PRE>&lt;!DOCTYPE grammar [
+  &lt;!ELEMENT grammar (rule|start|formula|targets|secondaries)*>
+  &lt;!ELEMENT rule (#PCDATA)>
+  &lt;!ELEMENT start (#PCDATA)>
+  &lt;!ELEMENT targets (#PCDATA)>
+  &lt;!ATTLIST targets sign CDATA "+">
+  &lt;!ELEMENT secondaries (formula,targets)>
+  &lt;!ATTLIST rule var NMTOKEN #REQUIRED>
+]></PRE>
+        </TD>
+      </TR>
+    </TABLE>
+    <P>
+       Each <FONT><SAMP>rule</SAMP></FONT> element contains a right-hand side
+      for the variable specified in its <FONT><SAMP>var</SAMP></FONT> attribute.
+      Each <FONT><SAMP>start</SAMP></FONT> element contains one start expression;
+      and a <FONT><SAMP>targets</SAMP></FONT> element contains a space-separated
+      list of target variables. The order of elements is not significant.
+      For instance, the grammar 
+    </P>
+    <blockquote>
+      <PRE>FORMULA
+  y
+START
+  _ x _
+RULES
+  x -> &lt;a> _ x _
+  x -> &lt;a> _ y _ &amp;&amp; ! _ z _
+  y -> &lt;b>
+  z -> &lt;c> v</PRE>
+    </blockquote>
+    <P>
+       could be specified in XML syntax as follows: 
+    </P>
+    <TABLE BGCOLOR="#C0E0FF" WIDTH="100%" BORDER="1" ALIGN="CENTER" CELLPADDING="5">
+      <TR>
+        <TD>
+          <PRE>&lt;grammar>
+  &lt;rule var="   x   ">&lt;![CDATA[    &lt;a> _ x _               ]]>  &lt;/rule>
+  &lt;rule var="   x   ">&lt;![CDATA[    &lt;a> _ y _ &amp;&amp; ! _ z _    ]]>  &lt;/rule>
+  &lt;rule var="   y   ">&lt;![CDATA[    &lt;b>                     ]]>  &lt;/rule>
+  &lt;rule var="   z   ">&lt;![CDATA[    &lt;c> v                   ]]>  &lt;/rule>
+  &lt;start>                              _ x _               &lt;/start>
+  &lt;formula>     y                                          &lt;/formula>
+&lt;/grammar></PRE>
+        </TD>
+      </TR>
+    </TABLE>
+
+    <p>The specification must contain a <samp>formula</samp> element
+    specifying the primary matches. In the case of binary matches, an
+    element <samp>targets</samp> must specify the primary
+    targets. Secondary matches must be specified by the element
+    <samp>secondaries</samp> element. This must have an element
+    <samp>formula</samp> and an element <samp>targets</samp>
+    specifying a secondary formula and the corresponding secondary
+    targets, as in the case of pure text grammar specification as
+    above.</p>
+
+   <p>For example in:</p>
+
+    <TABLE BGCOLOR="#C0E0FF" WIDTH="100%" BORDER="1" ALIGN="CENTER" CELLPADDING="5">
+      <TR>
+        <TD>
+          <PRE>&lt;grammar>
+   &lt;rule var="         x1   ">&lt;![CDATA[    &lt;*> _ (x1|xa|xb) _    ]]>  &lt;/rule>
+   &lt;rule var="         xa   ">&lt;![CDATA[    &lt;a> _ (x2|xc1) _      ]]>  &lt;/rule>
+   &lt;rule var="         x2   ">&lt;![CDATA[    &lt;*> _ (x2|xc1) _      ]]>  &lt;/rule>
+   &lt;rule var="         xc1  ">&lt;![CDATA[    &lt;c> _ xd _            ]]>  &lt;/rule>
+   &lt;rule var="         xb   ">&lt;![CDATA[    &lt;b> _ (x3|xc2) _      ]]>  &lt;/rule>
+   &lt;rule var="         x3   ">&lt;![CDATA[    &lt;*> _ (x3|xc2) _      ]]>  &lt;/rule>
+   &lt;rule var="         xc2  ">&lt;![CDATA[    &lt;c> _ xd _            ]]>  &lt;/rule>
+   &lt;rule var="         xd   ">&lt;![CDATA[    &lt;d> _                 ]]>  &lt;/rule>
+
+
+   &lt;start>            _ x1 _                                    &lt;/start>
+
+   &lt;formula>           xd                                       &lt;/formula>
+   &lt;targets>           xd                                       &lt;/targets>
+   &lt;secondaryTargets>
+     &lt;formula>         xc1 & xc2                                 &lt;/formula>
+     &lt;targets>         xc1 xc2                                   &lt;/targets>
+   &lt;/secondaryTargets>
+ &lt;/grammar></PRE>
+        </TD>
+      </TR>
+    </TABLE>
+
+    <p>the primary matches are <samp>d</samp> nodes that have a
+    <samp>c</samp> father and some <samp>a</samp> or <samp>b</samp>
+    ancestor. The secondary matches are <samp>c</samp> nodes that have
+    both an <samp>a</samp> and a <samp>b</samp> ancestor. A binary
+    match is a pair of a <samp>d</samp> node and its <samp>c</samp>
+    father having both an <samp>a</samp> and a <samp>b</samp>
+    ancestor.</p>
+      
+
+    <P>
+       The reason for the use of CDATA sections is that the <FONT><SAMP>&lt;</SAMP></FONT>
+      and <FONT><SAMP>&amp;</SAMP></FONT> characters would be recognized as
+      markup characters otherwise. Though the grammar can be indented using
+      white space, the CDATA sections make the grammar hardly intelligible.
+      However, the XML syntax has the advantage of allowing an arbitrary encoding
+      as far as it is supported by <I>fxp</I>. 
+    </P>
+    <P>
+       By default, the XML document containing the grammar is parsed in non-validating
+      mode with inclusion of external parsed entities. If the grammar has
+      validity or well-formedness errors, <I>fxgrep</I> ignores them. This
+      behavior can be changed with the <FONT><SAMP>--grammar-validate</SAMP></FONT>,
+      <FONT><SAMP>--grammar-include</SAMP></FONT> and <FONT><SAMP>--ignore-xml-errors</SAMP></FONT>
+      options. For instance, 
+    </P>
+    <blockquote>
+      <PRE>fxgrep -g gram.xml --grammar-validate --ignore-xml-errors=no</PRE>
+    </blockquote>
+    <P>
+       reads the grammar from the file <FONT><SAMP>gram.xml</SAMP></FONT>
+      in validating mode, and exits with an error if that file is invalid
+      or ill-formed XML, whereas 
+    </P>
+    <blockquote>
+      <PRE>fxgrep -g gram.xml --grammar-include=no</PRE>
+    </blockquote>
+    <P>
+       parses that file in non-validating mode without inclusion of external
+      entities. 
+    </P>
+    <P>
+       <I>fxgrep</I> normally warns about undefined variables in a grammar,
+      i.e., variables that are used on a right hand side but not defined by
+      a rule. For instance, <I>fxgrep</I> will produce the following warning
+      for the above example grammar: 
+    </P>
+    <blockquote>
+      <PRE>[gram.xml:5.42] Grammar warning: Variable 'v' is used here but is not defined.</PRE>
+    </blockquote>
+    <P>
+       This warning can be disabled with the option <FONT><SAMP>--warn-undef-vars=no</SAMP></FONT>.
+      
+    </P>
+    <P>
+       If the grammar or the pattern contains a syntax error (with respect
+      to the pattern/grammar syntax of <I>fxgrep</I>) then <I>fxgrep</I> will
+      normally exit with an error. However, if <FONT><SAMP>--ignore-syntax-errors</SAMP></FONT>
+      is given, it will try to recover from the error and perform the querying
+      any way. Beware that in this case the query might be misinterpreted
+      due to the syntax error and yield unintended matches! 
+    </P>
+    <P>
+      <IMG SRC="Images/shadow-big.jpg" ALT="-----------------" WIDTH="100%">
+    </P>
+
+    <ADDRESS>
+      <A HREF="http://www.informatik.uni-trier.de/~aberlea/">A. Berlea</A>
+      (<A HREF="mailto:aberlea@psi.uni-trier.de">aberlea@psi.uni-trier.de</A>)
+    </ADDRESS>
+  </BODY>
+</HTML>

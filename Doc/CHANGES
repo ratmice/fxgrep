@@ -1,0 +1,88 @@
+From 4.0 to 4.1
+====================
+(05.06.2003)
+Rather than sets of variables matches (both primaries and secondaries)
+can be specified via boolean formulas over variables.
+Reduced code size for matching.
+Changes in the interface to fxt.
+Updated documentation.
+
+From 2.1 to 4.0
+====================
+(17.02.2003)
+Allowing negations and conjunctions of paths in patterns. A pattern can
+be now a conjunction of possibly negated paths followed by the target node.
+Changes in the interface to fxt.
+Updated documentation.
+
+From 2.0 to 2.1
+====================
+(18.07.2002)
+Changed the default leading and trailing forest in forest patterns
+(a[b] <--> a[_ b _])
+Changed interface to fxt to allow for binary patterns in fxt
+Changed the reference to a secondary from & to %
+(15.04.2002)
+Added regular expressions for element names
+
+From 1.4.5 to 2.0
+====================
+(11.04.2002)
+Added binary patterns
+(20.02.2002)
+Modified the Makefiles to avoid unnecessary recompilations
+(21.01.2002)
+Removed a bug in down transitions in the second pass
+Improved side transitions in the second pass
+
+From 1.4.4 to 1.4.5
+====================
+(17.09.2001)
+
+Reduced code size
+Updated documentation
+Removed a bug in parsing escape sequences in patterns
+Removed a bug in pattern matching of procesing instructions
+
+From 1.4.3 to 1.4.4
+====================
+(13.09.2001)
+
+Removed unrelevant debug messages
+
+From 1.4.2 to 1.4.3
+====================
+(28.08.2001)
+
+Internal changes to give to fxt information needed for one-pass
+transforming
+
+From 1.4.1 to 1.4.2
+====================
+(6.08.2001)
+
+Extension of the pattern language of fxgrep:
+  - regular conditions on the paths may now be specified as for
+  example:
+    (a/)+b - matches the b-s that have only a ancestors
+  - regular contextual conditions are now allowed as for example:
+    a[(b#)+_]/b - matches every second b of a document with type a if
+                  this contains only b sons
+
+Internal optimization for the one-pass matching (both for the while-
+and after-parsing matchings):
+  - no-hooks: if a grammar is content ignorant (i.e. there is no need
+  of inspecting the content of an element in order to tell whether it
+  is a match or not) and all matches are to be reported then matches
+  are reported directly as they are detected after seeing their tag
+  name and their attributes. 
+  - hooks: the extra administrative task of maintaining an optional
+  partial document tree, for the possible matches is reduced, as the
+  decision whether to construct the subtree is delayed until after the
+  element name and the attributes are processed.
+
+
+From 1.4 to 1.4.1
+====================
+
+Internal changes that permit the interfacing of fxgrep with fxt.

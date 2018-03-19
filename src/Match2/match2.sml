@@ -97,7 +97,7 @@ structure Match2 =
 	      (IntListMap.insert (matchMap,y,matchInfo),primaries)
 	    end)
 	   (matchMap,primaries) ys)
-	  (matchMap,IntListMap.empty) (secMatches,0,NONE)
+	  (matchMap,IntListMap.empty) secMatches
 
         val _ = IntListMap.appi
 	  (fn (j,secOrds) =>

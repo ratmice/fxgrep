@@ -1,0 +1,3 @@
+[submodule "deps/fxp"]
+	path = deps/fxp
+	url = https://github.com/cannam/fxp.git

@@ -67,8 +67,10 @@ structure TextDfa : TextDfa =
 			    val arr = Array.array(Chars.toInt size+1,def)
 			    val _ = app
 			       (fn (l,h,q) => 
-				Array.modifyi (fn _ => q) 
-				(arr,Chars.toInt(l-lo),SOME(Chars.toInt(h-l+0w1))))
+				ArraySlice.modifyi (fn _ => q)
+				        (ArraySlice.slice (arr,
+					  Chars.toInt(l-lo),
+					  SOME(Chars.toInt(h-l+0w1)))))
 			       lhqs1
 			in (lo,size,TRANS arr)::makeSegments(rest,def)
 			end
@@ -220,7 +222,7 @@ structure TextDfa : TextDfa =
 				   val qv1 = Vector.mapi
 				      (fn (k,(_,tab)) => transition
 				       (tab,Vector.sub(qv,k),c)) 
-				      (iTabs,0,NONE)
+				      iTabs
 			  in doit(j+1,qv1)
 			       end 
 		       val qvF = doit (0,qv0)
@@ -228,7 +230,7 @@ structure TextDfa : TextDfa =
 			  (fn (k,(i,tab),accept) => 
 			   if isFinal(tab,Vector.sub(qvF,k))
 			      then i::accept else accept)
-			  nil (iTabs,0,NONE)
+			  nil iTabs
 		   in accept
 		   end
    end

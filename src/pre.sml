@@ -68,8 +68,8 @@ structure Pre =
 	     in
 	       if inIntList (x,targets') then IntLists.addIntList(y,doYs') else doYs'
 	     end)
-	    (targets',0,NONE))
-       end) (targets,0,NONE)
+	    targets')
+       end) targets
 
 
 
@@ -185,7 +185,7 @@ structure Pre =
 		    in
 		      (others,(rul,dfa,y0s)::regexpNameRules)
 		    end
-		  ) (nil,nil) (rulArr,0,NONE) 
+		  ) (nil,nil) rulArr
 
 	   val y0s_for_ks = y0s_for_ks y0_of_re
 	     
@@ -253,7 +253,7 @@ structure Pre =
 	       rhss)
 	      rules
 	  in 
-	    Array.extract (arr,0,NONE)
+	    Array.vector arr
 	  end
 
         (* given a y, it returns the list of posible ys in the output

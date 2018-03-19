@@ -118,7 +118,7 @@ as opposed to m for primaries *)
 	   in
 	     if m then capIntLists(ys,s) else nil
 	   end) 
-	  (secondaries,0,NONE)
+	  secondaries
       in
 	(m,prim,sec)
       end
@@ -132,7 +132,7 @@ as opposed to m for primaries *)
 	    val b = 
 	      Vector.mapi 
 	      (fn (i,carry) => getMatchInfo (ys,carry,Vector.sub(postForm,i))) 
-	      (doMatch,0,NONE)
+	      doMatch
 	  in 
 	    b before setQinfo (qDict,q,(a,SOME b,c,d,e,f))
 	  end

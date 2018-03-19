@@ -25,8 +25,8 @@ SML_EXEC   = ${SML_BINDIR}/sml
 # 110.19 you might have to use the second or third line. This is the
 # compilation manager function for making with a named description file. 
 ##############################################################################
-SML_MAKEDEF= val make = CM.make'
-#SML_MAKEDEF= val make = CM.make
+#SML_MAKEDEF= val make = CM.make'
+SML_MAKEDEF= val make = CM.make
 #SML_MAKEDEF= fun make x = CM.make'{force_relink=true, group=x}
 
 ##############################################################################

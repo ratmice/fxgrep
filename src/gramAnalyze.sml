@@ -23,7 +23,7 @@ structure GramAnalyze : GramAnalyze =
                                val _ = Vector.appi 
                                   (fn (i,xs) => app 
                                    (fn x => Array.update(arr,x,i::Array.sub(arr,x))) xs)
-                                  (xs_in_re,0,NONE)
+                                  xs_in_re
                            in Vector.tabulate(max,fn x => rev(Array.sub(arr,x)))
                            end
             val xs_of_re = let val arr = Array.array(Vector.length xreVec,SOME nil)
@@ -60,7 +60,7 @@ structure GramAnalyze : GramAnalyze =
          let 
             val yXs = Array.foldli 
                (fn (y,(x',_),yXs) => if x=x' then y::yXs else yXs) 
-               nil (berry,0,NONE)
+               nil berry
                
             fun follow y = let val (_,(flw,_,_,_)) = Array.sub(berry,y) in flw end
             fun final y = let val (_,(_,_,fin,_)) = Array.sub(berry,y) in fin end

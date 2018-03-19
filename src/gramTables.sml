@@ -91,7 +91,7 @@ structure GramTables : GramTables =
       fun extractXTable tab = 
          let 
             val arr = extractDict tab
-            val list = Array.foldri (fn (x,(_,(rs,_)),xrs) => (x,rs)::xrs) nil (arr,0,NONE)
+            val list = Array.foldri (fn (x,(_,(rs,_)),xrs) => (x,rs)::xrs) nil arr
          in 
             (Array.length arr,list)
          end

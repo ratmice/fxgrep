@@ -105,12 +105,12 @@ structure PreArgBlg : PreArgBlg =
 		   in 
 		     (if ini then y::F else F, if final then y::F1 else F1,allTrans1,doMatch)
 		   end)
-	       (nil,nil,allTrans,doMatch) (berry,0,NONE) 
+	       (nil,nil,allTrans,doMatch) berry
 	     val _ = Array.update(reArr,re,((off,off+len),F,F1))
 	   in 
 	     (off+len,allTrans1,doMatch)
 	   end) 
-	  (0,nil,doMatch) (xreVec,0,NONE)
+	  (0,nil,doMatch) xreVec
 		 
 	fun makeRTrans nil = ()
 	  | makeRTrans (y1xys as ((y1,_,_)::_)) = 
@@ -180,14 +180,14 @@ structure PreArgBlg : PreArgBlg =
 		constructed in the prec of the NFA) lead to final
 	        states*)
 	       txts,transR,yFs_for_ks elsR,num))
-	  (yArr,0,NONE)
+	  yArr
 	val y0s_for_ks = y0s_for_ks 
 
 
 	val (incomingXVec,yVec,reVec) = 
-	  (Array.extract(incoming_x_of_yArr,0,NONE),
-	   Array.extract(yArr,0,NONE),
-	   Array.extract (reArr,0,NONE))
+	  (Array.vector incoming_x_of_yArr,
+	   Array.vector yArr,
+	   Array.vector reArr)
 
 	val _ = Array.modify (ListMergeSort.sort Int.>) target_ys_of_xArr
 	fun target_ys_of_x x= Array.sub (target_ys_of_xArr,x)
@@ -273,7 +273,7 @@ structure PreArgBlg : PreArgBlg =
 	val xTemp = Array.array(max,(false,~1))
 	val _ = Vector.appi 
 	  (fn (i,interval) => appInterval (fn x => Array.update(xTemp,x,(false,i))) 
-	   interval) (intervals,0,NONE)
+	   interval) intervals
 	fun numOf x = #2(Array.sub(xTemp,x))
 	val patternNum = numOf
       in 

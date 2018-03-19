@@ -131,7 +131,7 @@ structure PatGrammar : PatGrammar =
 	     next
 	   end)
 	  next
-	  (berry,0,NONE)
+	  berry
 	  
 	val starts = Array.sub (vars,0) (*the variables associated with the start state*)
 	(*implies that 0 is always the one and only initial state*)
@@ -195,7 +195,7 @@ expression *)
 	     (next4,rules5,(targets5,targets'))
 	   end)
 	  (next,rules,(nil,targets'))
-	  (berry,0,NONE)
+	  berry
 
 	  
 	val targets= 

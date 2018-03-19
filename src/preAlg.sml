@@ -77,10 +77,10 @@ structure PreAlg : PreAlg =
 		  val f2 = Vector.sub(fs2,j)
 		in
 		  (f,f1,f2)
-		end) (fs,0,NONE)
+		end) fs
 	   in
 	     ((f,f1,f2),fs)
-	   end) (preForm,0,NONE)
+	   end) (preForm)
 
 	val target_ys_of_xArr = Array.array (max,nil)
 
@@ -158,14 +158,14 @@ with x as incoming transition *)
 		in 
 		  (if fin then y::F else F,doMatch,m)
 		end)
-	       (nil,doMatch,m) (berry,0,NONE)
+	       (nil,doMatch,m) berry
 
 	     val _ = Array.update(reArr,re,(off,F))
 	   in 
 	     (off+len,doMatch,m)
-	   end) (0,doMatch,preForm) (xreVec,0,NONE)
+	   end) (0,doMatch,preForm) xreVec
 
-	val reVec = Array.extract (reArr,0,NONE)
+	val reVec = Array.vector reArr
 
 	val y0s_for_ks = Pre.y0s_for_ks (fn re => 
 					 let
@@ -175,9 +175,9 @@ with x as incoming transition *)
 					 end)
 	val _ = Array.modifyi
 	  (fn (i,(re,trans,els,txts,num)) => (re,trans,y0s_for_ks els rulArr,txts,num))
-	  (yArr,0,NONE)
+	  yArr
 
-	val yVec = Array.extract(yArr,0,NONE)
+	val yVec = Array.vector (yArr)
 
 	val _ = Array.modify (ListMergeSort.sort Int.>) target_ys_of_xArr
 	fun target_ys_of_x x= Array.sub (target_ys_of_xArr,x)
@@ -317,7 +317,7 @@ used anyway *)
 	(* enter the pattern numbers *)
 	val _ = Vector.appi 
 	  (fn (i,interval) => appInterval (fn x => Array.update(xTemp,x,(false,i))) 
-	   interval) (intervals,0,NONE)
+	   interval) intervals
 	fun patternNum x = #2(Array.sub(xTemp,x))
       in 
 	alg patternNum (flat,Vector.fromList matchSpecs)

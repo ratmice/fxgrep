@@ -38,7 +38,8 @@ RMDIR     = rmdir
 COPY      = cp -f
 CHMOD     = chmod
 FIND      = find
-MKDIRHIER = mkdirhier
+#MKDIRHIER = mkdirhier
+MKDIRHIER = mkdir -p
 
 ##############################################################################
 # nothing to change below this line

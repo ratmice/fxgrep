@@ -20,13 +20,16 @@ FXGREP_LIBDIR = ${PREFIX}/fxgrep
 ##############################################################################
 SML_BINDIR = /local/sml/bin
 SML_EXEC   = ${SML_BINDIR}/sml
+
 ##############################################################################
 # No need to change this for SML-NJ 110.0.6. For earlier or working versions  
 # 110.19 you might have to use the second or third line. This is the
 # compilation manager function for making with a named description file. 
 ##############################################################################
 #SML_MAKEDEF= val make = CM.make'
-SML_MAKEDEF= val make = CM.make
+SML_MAKEDEF= \
+val _ = (\#set (CM.Anchor.anchor \"fxp\")) (SOME \"$(PWD)/deps/fxp/src\"); \
+val make = CM.make
 #SML_MAKEDEF= fun make x = CM.make'{force_relink=true, group=x}
 
 ##############################################################################
@@ -56,10 +59,6 @@ arch.os:
 	${SML_BINDIR}/.arch-n-opsys | \
 	${SED} -e 's/^.*HEAP_SUFFIX=\(.*\)$$/\1/' > .arch-opsys
 
-fxlib.cm: Makefile 
-	echo Alias ${FXP_LIBDIR}/fxlib.cm > ${SRC}/fxlib.cm
-
-
 fxgrep.sh: Makefile arch.os
 	${RM} fxgrep.sh
 	echo "#!/bin/sh -f" > fxgrep.sh
@@ -70,7 +69,7 @@ fxgrep.sh: Makefile arch.os
 
 image.fxgreplib:
 
-image.fxgrep: fxlib.cm
+image.fxgrep:
 	@echo "Creating the ${PROG_NAME} heap image..."
 	echo "${SML_MAKEDEF}; make \"${SRC}/fxgrep.cm\"; \
 	      SMLofNJ.exportFn(\"${SRC}/_fxgrep\",Grep.grep)" | ${SML_EXEC}
@@ -80,7 +79,7 @@ inst.dirs:
 	test -d ${FXGREP_BINDIR} || ${MKDIRHIER} ${FXGREP_BINDIR}	
 	test -d ${FXGREP_LIBDIR} || ${MKDIRHIER} ${FXGREP_LIBDIR}
 
-inst.fxgreplib: inst.dirs fxlib.cm
+inst.fxgreplib: inst.dirs
 	for dir in `${FIND} ${SRC} ${FXGREPLIB_PRUNE} -prune -o -type d -print`; do \
 	    ${MKDIRHIER} ${FXGREP_LIBDIR}/$${dir}; \
 	done;
@@ -107,5 +106,5 @@ install:
 	done
 
 clean:
-	-${RM} -f ${SRC}/_fx.* fxgrep.sh .arch-opsys ${SRC}/fxlib.cm
+	-${RM} -f ${SRC}/_fx.* fxgrep.sh .arch-opsys
 	-find ${SRC} -type d -name CM -print | xargs ${RM} -r 

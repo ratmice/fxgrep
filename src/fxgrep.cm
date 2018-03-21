@@ -69,4 +69,4 @@ Group is
     $/ml-yacc-lib.cm
     $/smlnj-lib.cm
     $/basis.cm
-    ../deps/fxp/src/fxlib.cm
+    $fxp/fxlib.cm
